@@ -33,7 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Patrick-4488
  */
-@ExtendWith(MockitoExtension.class)
 public class EssenceValidatorTest {
 
     private EssenceValidator classUnderTest;

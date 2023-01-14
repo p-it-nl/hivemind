@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Patrick-4488
  */
-@ExtendWith(MockitoExtension.class)
 public class ContentTypeTest {
 
     private static final String VALUE_EMPTY = "";

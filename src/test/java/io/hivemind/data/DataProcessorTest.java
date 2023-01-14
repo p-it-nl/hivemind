@@ -34,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Patrick-4488
  */
-@ExtendWith(MockitoExtension.class)
 public class DataProcessorTest {
 
     private static DataProcessor classUnderTest;

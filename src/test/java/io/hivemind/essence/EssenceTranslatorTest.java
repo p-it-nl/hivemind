@@ -15,7 +15,6 @@
  */
 package io.hivemind.essence;
 
-import io.hivemind.data.conversion.Converter;
 import io.hivemind.exception.HiveCeption;
 import io.hivemind.exception.HiveException;
 import io.hivemind.exception.InvalidEssenceException;
@@ -26,8 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -40,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * @author Patrick-4488
  */
-@ExtendWith(MockitoExtension.class)
 public class EssenceTranslatorTest {
 
     private EssenceTranslator classUnderTest;

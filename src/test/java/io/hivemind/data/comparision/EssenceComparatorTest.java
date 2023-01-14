@@ -36,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * @author Patrick-4488
  */
-@ExtendWith(MockitoExtension.class)
 public class EssenceComparatorTest {
 
     private EssenceComparator classUnderTest;

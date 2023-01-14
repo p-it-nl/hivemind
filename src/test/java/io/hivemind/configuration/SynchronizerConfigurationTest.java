@@ -34,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * @author Patrick-4488
  */
-@ExtendWith(MockitoExtension.class)
 public class SynchronizerConfigurationTest {
 
     private static final String URI = "http://unitesting.com/mock";
