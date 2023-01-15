@@ -19,8 +19,6 @@ import io.hivemind.exception.HiveCeption;
 import io.hivemind.exception.HiveException;
 import io.hivemind.exception.HiveRequestException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
