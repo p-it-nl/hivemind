@@ -19,10 +19,11 @@ TODO: Split library into two, one being 'Hivemind', the other being 'Hivemind sy
 Hivemind has two separate modules based on separation of concern:
 - server -> the Hivemind server, responsible for determining the status of and sharing data with synchronizers
 - synchronizer -> the Hivemind synchronizer, responsible for connecting to the Hivemind and processing requests and responses. This package is to be integrated in applications
--- available synchronizers:
---- Java
---- Android
---- ...more to come...
+
+Available synchronizers:
+- Java
+- Android
+- ...more to come...
 
 ## Server
 
