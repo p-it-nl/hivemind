@@ -84,7 +84,7 @@ public enum ConsistencyModel {
      * reads are preformed in single FIFO queue order. Sequential consistency
      * uses linearizability.
      *
-     * FUTUEW_WORK: Implement linearizability (read before write and use
+     * FUTURE_WORK: Implement linearizability (read before write and use
      * priority requests)
      * </p>
      * Server: -

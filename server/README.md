@@ -1,22 +1,15 @@
-# Hivemind
+# Hivemind server
 
-Hivemind provides a distributed storage based on continuous stateless data synchronization. 
-Hivemind provides decoupling for backpressure handling and replayability of events. Based on the consistency model the event order can be guaranteed.
-Hivemind utilizes a representation of the data in the form of an 'essence'. This forms the basis for which the Hivemind determines if and if so what data to synchronize with the synchronizer.
-Hivemind can connect to any amount of applications that implement the synchronizer (consuming application).
+The Hivemind server, is responsible for determining the status of and sharing data with synchronizers.
+This server provides a distributed storage based on continuous stateless data synchronization. 
+The Hivemind server interprets received 'essences' and synchronizes data to synchronizers.
+The communication is pull based, with the server responding to requests and not sending requests.
 
-## Documentation
-
-The documentation can be found at: ...
-
-## Maven central repository
-
-TODO: Upload to maven central
-TODO: Split library into two, one being 'Hivemind', the other being 'Hivemind synchronizer' where the latter only provides the requirements for synchronization and omits the server code. 
+FUTURE_WORK: With implementation of processor_consistency above should be updated, since processor_consistency will be requiring pull and push based communication
 
 ## Setting up a development environment
 
-The application requires Java 11 or later and will support any new Java releases as soon as possible after release.
+The application requires Java 17 or later and will support any new Java releases as soon as possible after release.
 The application has an optional dependency on Netty. This is to provide a solid NIO implementation of Hivemind for those that require it.
 The application utilizes Maven. Other than that there are zero third-party dependencies to build and run the application!
 
@@ -52,17 +45,4 @@ For more information see: https://robotframework.org
 
 To deploy a Hivemind server you need to build an executable JAR by running `mvn clean install`.
 After this, you can deploy and run the JAR residing in the `\target` folder as per your choosing.
-
-## Add synchronizers
-
-To connect to the Hivemind and start synchronizing data you will have to configure the application to connect to the Hivemind.
-To do this, take the following steps:
-	- add the Hivemind synchronizer dependency (not yet in maven central, you can use a local link)
-	- extend your data object from HiveResource
-	- create an implementation of the ResourceProvider
-	- create an instance of SynchronizerConfiguration and provide your required configuration
-	- create an implementation of HiveSynchronizer and provide the ResourceProvider and SynchronizerConfiguration in the constructor
-	- start the HiveSynchronizer
-	
-See folder `/example` for a basic example of a synchronizer implementation.
 
