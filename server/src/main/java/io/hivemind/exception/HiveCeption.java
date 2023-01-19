@@ -38,21 +38,9 @@ public enum HiveCeption {
     UNABLE_TO_SETUP_SERVER("""
         The application was not able to set up a server to boot the hive, see exception for more details"""
     ),
-    REQUEST_FAILED("""
-        Failed to process received request, this might be to the request not being a valid http request"""
-    ),
     INVALID_ESSENCE("""
         The received hive essence is not valid. Expected is a list of bytes containing: 
         {id},{version};{id},{version}.... """
-    ),
-    CONSISTENCY_MODEL_NOT_SUPPORTED("""
-        The requested consistency model is not (yet) supported"""
-    ),
-    HIVE_RESOURCE_ID_OR_VERSION_NOT_NUMBER("""
-        While attemting to generate the essence, a value for either id or version 
-        of the hive resources was given which is not a number. This is not (currently) 
-        supported since the value will become part of a number sequence that 
-        represents the hive essence. Please use a number"""
     ),
     UNEXPECTED_VALUE_FOR_CLEAR_RECEIVED_BY_MANAGER("""
         The manage request received contained an unexpected value for clear, expecting 

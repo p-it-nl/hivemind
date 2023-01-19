@@ -31,12 +31,12 @@ public abstract class Converter<T> {
      * <br>
      * If the type is not supported it will currently return null
      * <br>
-     * FUTURE_WORK: Java 19, use pattern matching FUTURE_WORK: maybe more clean
-     * to throws NotSupportedException? FUTURE_WORK: Implement support for Long
-     * as part of essence instead of only supporting Strings. The byte array for
-     * Long is lighter then the byte array for String for the same value. Long
-     * being 8 bytes and string being atleast 40 bytes (currently the JVM will
-     * allocate 40 bytes for an empty string by default)
+     * FUTURE_WORK: Java 19, use pattern matching<br>
+     * FUTURE_WORK: Implement support for Long as part of essence instead of
+     * only supporting Strings. The byte array for Long is lighter then the byte
+     * array for String for the same value. Long being 8 bytes and string being
+     * at least 40 bytes (currently the JVM will allocate 40 bytes for an empty
+     * string by default)
      *
      *
      * @param c the type
