@@ -11,3 +11,5 @@ nb-configuration.xml
 /synchronizer - Copy/target/
 /synchronizer-android/target/
 /server/target/
+/synchronizer/example/hivemind-synchronizer-example/nbproject/
+/synchronizer/example/hivemind-synchronizer-example/target/
