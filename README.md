@@ -32,5 +32,6 @@ Refer to [/server](/server).
 ## Add synchronizers
 
 Refer to [/synchronizer](/synchronizer).
+
 For Android, refer to  [/synchronizer-android](/synchronizer-android).
 
