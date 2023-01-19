@@ -1,0 +1,6 @@
+io\hivemind\example\synchronizer\SomeService.class
+io\hivemind\example\synchronizer\SomeData.class
+io\hivemind\example\synchronizer\ExampleResourceProvider.class
+io\hivemind\example\synchronizer\MatchesIdAndVersionPredicate.class
+io\hivemind\example\synchronizer\IsNotInMapPredicate.class
+io\hivemind\example\synchronizer\HivemindSynchronizerExample.class
