@@ -8,6 +8,9 @@ Library          String
 Suite Setup    Create Session    Hivemind    ${uri}
 
 *** Test Cases ***
+Clear Before - All tests
+    Clean
+
 Synchronizing data from A to B
     [Documentation]    A having data, B having no data, will synchronize data to B
     [Tags]             A-B

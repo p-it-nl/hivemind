@@ -13,26 +13,26 @@ pipeline {
         
 		stage('Build hivemind') {
 		    steps {
-			   sh 'mvn clean install'
+			   sh 'cd server && mvn clean install'
 		    }
 		}
 		
 		stage('Copy to hivemind server') {
 		    steps {
-		        sh 'rsync -avz -e "ssh" restart.sh hivemind@{url}:{path}'
-		        sh 'rsync -avz -e "ssh" target/* hivemind@{url}:{path}'
+		        sh 'rsync -avz -e "ssh" server/restart.sh {user}@{url}:/home/hivemind/hivemind'
+		        sh 'rsync -avz -e "ssh" server/target/* {user}@{url}:/home/hivemind/hivemind'
 		    }
 		}
 
 		stage('Run on hivemind server') {
 		    steps {
-			    sh 'ssh hivemind@{url} "echo hivemind | sudo -S nohup sh {path}restart.sh < /dev/null >> logfile.log 2>&1 &"'
+			    sh 'ssh {user}@{url} "echo {password} | sudo -S nohup sh /home/hivemind/hivemind/restart.sh < /dev/null >> logfile.log 2>&1 &"'
 		    }
 		}
 		
 		stage('Test hivemind server') {
 		    steps {
-			    sh 'cd tests && robot hivemind-tests.robot'
+			    sh 'cd server/tests && robot hivemind-tests.robot'
 		    }
 		}
     }
