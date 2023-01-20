@@ -52,9 +52,13 @@ public class HiveSynchronizer {
     public void startSynchronization() throws HiveSynchronizationException {
         LOGGER.info("Starting synchronization with Hivemind");
 
-        executor = new ScheduledThreadPoolExecutor(1, new ThreadPoolExecutor.DiscardPolicy());
-        SynchronizeTask task = new SynchronizeTask(new HiveEssenceDataProvider(resourceProvider), config);
-        executor.scheduleAtFixedRate(task, 0, config.getPeriodBetweenRequests(), TimeUnit.SECONDS);
+        if (executor == null || executor.getActiveCount() == 0 || executor.isShutdown()) {
+            executor = new ScheduledThreadPoolExecutor(1, new ThreadPoolExecutor.DiscardPolicy());
+            SynchronizeTask task = new SynchronizeTask(new HiveEssenceDataProvider(resourceProvider), config);
+            executor.scheduleAtFixedRate(task, 0, config.getPeriodBetweenRequests(), TimeUnit.SECONDS);
+        } else {
+            // Not allowing multiple synchronizing tasks in parralel
+        }
 
         LOGGER.info("Started synchronization with Hivemind");
     }
