@@ -19,7 +19,7 @@ pipeline {
 						
 		stage('Run sonar-scanner') {
 		    steps {
-		        sh 'sonar-scanner -Dsonar.login={token} -Dsonar.projectBaseDir=server'
+		        sh 'sonar-scanner -Dsonar.login={token} -Dsonar.projectBaseDir=synchronizer'
 		    }
 		}
 		
