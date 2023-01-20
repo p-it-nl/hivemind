@@ -16,6 +16,12 @@ pipeline {
 			   sh 'cd synchronizer && mvn clean install'
 		    }
 		}
+						
+		stage('Run sonar-scanner') {
+		    steps {
+		        sh 'sonar-scanner -Dsonar.login={token} -Dsonar.projectBaseDir=server'
+		    }
+		}
 		
 		stage('TODO: execute tests') {
 		    steps {
