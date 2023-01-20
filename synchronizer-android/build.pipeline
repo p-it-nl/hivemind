@@ -11,7 +11,7 @@ pipeline {
             }
 		}
         
-		stage('Build hivemind') {
+		stage('Build hivemind synchronizer android') {
 		    steps {
 			   sh 'cd synchronizer-android && mvn clean install'
 		    }
