@@ -18,13 +18,13 @@ package io.hivemind.synchronizer;
 import io.hivemind.synchronizer.configuration.SynchronizerConfiguration;
 import io.hivemind.synchronizer.constant.ContentType;
 import io.hivemind.synchronizer.data.PreparedData;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,19 +125,19 @@ public class SynchronizeTask implements Runnable {
                     if (ContentType.HIVE_ESSENCE == contentType) {
                         LOGGER.info("Synchronization task succeeded, application received data request");
 
-                        byte[] respondingEssence = response.getInputStream().readAllBytes();
+                        byte[] respondingEssence = readData(response);
                         if (respondingEssence != null && respondingEssence.length > 0) {
                             dataToSend = new PreparedData(essenceDataProvider.getDataForEssence(respondingEssence));
                         }
                     } else if (ContentType.OTHER == contentType) {
                         LOGGER.info("Synchronization task succeeded, application received data");
 
-                        essenceDataProvider.saveData(response.getInputStream().readAllBytes());
+                        essenceDataProvider.saveData(readData(response));
                     }
                 }
                 case 409 -> {
                     LOGGER.info("Synchronization task succeeded, application received priority request");
-                    essenceDataProvider.processPriorityEssence(response.getInputStream().readAllBytes());
+                    essenceDataProvider.processPriorityEssence(readData(response));
                 }
             }
 
@@ -179,5 +179,18 @@ public class SynchronizeTask implements Runnable {
     private boolean isSuccessful(final HttpURLConnection response) throws IOException {
         int code = response.getResponseCode();
         return code == 200 || code == 204 || code == 409;
+    }
+
+    private byte[] readData(final HttpURLConnection response) throws IOException {
+        byte[] data;
+        try ( InputStream input = response.getInputStream();  ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            final byte[] buffer = new byte[8192];
+            for (int count; (count = input.read(buffer)) > 0;) {
+                output.write(buffer, 0, count);
+            }
+            data = output.toByteArray();
+        }
+
+        return data;
     }
 }
