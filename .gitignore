@@ -1,10 +1,10 @@
 /target/
 nbactions.xml
 nb-configuration.xml
-log.html
-output.xml
-report.html
-/nbproject/
+/server/tests/log.html
+/server/tests/output.xml
+/server/tests/report.html
+**/nbproject/
 /example/hivemindSynchronizerExample/target/
 /example/hivemindSynchronizerExample/nbproject/
 /synchronizer/target/
