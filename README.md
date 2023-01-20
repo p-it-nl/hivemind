@@ -12,7 +12,6 @@ The documentation can be found at: ...
 ## Maven central repository
 
 TODO: Upload to maven central
-TODO: Split library into two, one being 'Hivemind', the other being 'Hivemind synchronizer' where the latter only provides the requirements for synchronization and omits the server code. 
 
 ## Modules
 
