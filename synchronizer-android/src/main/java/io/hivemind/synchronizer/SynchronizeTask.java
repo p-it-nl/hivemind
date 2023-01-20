@@ -15,17 +15,14 @@
  */
 package io.hivemind.synchronizer;
 
-import io.hivemind.configuration.SynchronizerConfiguration;
-import io.hivemind.constant.ContentType;
-import io.hivemind.data.PreparedData;
-import io.hivemind.helper.RequestHelper;
+import io.hivemind.synchronizer.configuration.SynchronizerConfiguration;
+import io.hivemind.synchronizer.constant.ContentType;
+import io.hivemind.synchronizer.data.PreparedData;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.util.List;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,14 +37,16 @@ public class SynchronizeTask implements Runnable {
     private PreparedData dataToSend;
     private boolean isDataRequest;
 
-    private final HttpClient client;
     private final EssenceDataProvider essenceDataProvider;
     private final SynchronizerConfiguration config;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SynchronizeTask.class);
+    private static final String KEY_TRACEPARENT = "traceparent";
+    private static final String KEY_CONTENT_TYPE = "content-type";
+    private static final String POST = "POST";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HiveEssenceDataProvider.class);
 
     public SynchronizeTask(final HiveEssenceDataProvider essenceDataProvider, final SynchronizerConfiguration config) {
-        this.client = HttpClient.newHttpClient();
         this.essenceDataProvider = essenceDataProvider;
         this.config = config;
     }
@@ -58,54 +57,65 @@ public class SynchronizeTask implements Runnable {
             LOGGER.info("Starting synchronization");
 
             // FUTURE_WORK: If consistency model is > eventual -> send data request immediatly
-            HttpRequest request;
+            HttpURLConnection connection;
             if (dataToSend != null && dataToSend.hasData()) {
                 isDataRequest = true;
-                request = buildDataRequest();
+                connection = buildDataRequest();
             } else {
                 isDataRequest = false;
-                request = buildEssenceRequest(essenceDataProvider.determineEssence());
+                connection = buildEssenceRequest();
             }
-            HttpResponse response = client.send(request, BodyHandlers.ofByteArray());
-            processResponse(response);
+            try ( OutputStream os = connection.getOutputStream()) {
+                if (isDataRequest) {
+                    os.write(dataToSend.getData());
+                } else {
+                    os.write(essenceDataProvider.determineEssence());
+                }
+                os.flush();
+                os.close();
+            }
+            processResponse(connection);
 
             LOGGER.info("Synchronization finished");
-        } catch (IOException | InterruptedException ex) {
+        } catch (IOException ex) {
             LOGGER.info("Synchronization task failed", ex);
         }
     }
 
-    private HttpRequest buildEssenceRequest(final byte[] bytes) {
-        HttpRequest.Builder buidler = HttpRequest.newBuilder();
-        buidler.uri(URI.create(config.getUri()))
-                .POST(HttpRequest.BodyPublishers.ofByteArray(bytes))
-                .header(RequestHelper.KEY_CONTENT_TYPE, ContentType.HIVE_ESSENCE.getValue());
-        if (traceparent != null && !traceparent.isEmpty()) {
-            buidler.header(RequestHelper.KEY_TRACEPARENT, traceparent);
-        }
+    private HttpURLConnection buildEssenceRequest() throws MalformedURLException, IOException {
+        HttpURLConnection urlConnection = getBaseRequest();
+        urlConnection.addRequestProperty(KEY_CONTENT_TYPE, ContentType.HIVE_ESSENCE.getValue());
 
-        return buidler.build();
+        return urlConnection;
     }
 
-    private HttpRequest buildDataRequest() {
-        HttpRequest.Builder buidler = HttpRequest.newBuilder();
-        buidler.uri(URI.create(config.getUri()))
-                .POST(HttpRequest.BodyPublishers.ofByteArray(dataToSend.getData()))
-                .header(RequestHelper.KEY_CONTENT_TYPE, ContentType.OTHER.getValue());
-        if (traceparent != null && !traceparent.isEmpty()) {
-            buidler.header(RequestHelper.KEY_TRACEPARENT, traceparent);
-        }
+    private HttpURLConnection buildDataRequest() throws MalformedURLException, IOException {
+        HttpURLConnection urlConnection = getBaseRequest();
+        urlConnection.addRequestProperty(KEY_CONTENT_TYPE, ContentType.OTHER.getValue());
 
-        return buidler.build();
+        return urlConnection;
     }
 
-    private void processResponse(final HttpResponse response) {
+    private HttpURLConnection getBaseRequest() throws MalformedURLException, IOException {
+        URL url = new URL(config.getUri());
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod(POST);
+        urlConnection.setDoOutput(true);
+        if (traceparent != null && !traceparent.isEmpty()) {
+            urlConnection.addRequestProperty(KEY_TRACEPARENT, traceparent);
+        }
+
+        return urlConnection;
+    }
+
+    // FUTURE_WORK: Now reading all bytes to the heap, better in some cases to buffer
+    private void processResponse(final HttpURLConnection response) throws IOException {
         if (traceparent == null || traceparent.isEmpty()) {
             updateTraceparent(response);
         }
 
         if (isSuccessful(response)) {
-            switch (response.statusCode()) {
+            switch (response.getResponseCode()) {
                 case 204 ->
                     LOGGER.info("Synchronization task succeeded, application is up to date");
                 case 200 -> {
@@ -113,19 +123,19 @@ public class SynchronizeTask implements Runnable {
                     if (ContentType.HIVE_ESSENCE == contentType) {
                         LOGGER.info("Synchronization task succeeded, application received data request");
 
-                        byte[] respondingEssence = (byte[]) response.body();
+                        byte[] respondingEssence = response.getInputStream().readAllBytes();
                         if (respondingEssence != null && respondingEssence.length > 0) {
                             dataToSend = new PreparedData(essenceDataProvider.getDataForEssence(respondingEssence));
                         }
                     } else if (ContentType.OTHER == contentType) {
                         LOGGER.info("Synchronization task succeeded, application received data");
 
-                        essenceDataProvider.saveData((byte[]) response.body());
+                        essenceDataProvider.saveData(response.getInputStream().readAllBytes());
                     }
                 }
                 case 409 -> {
                     LOGGER.info("Synchronization task succeeded, application received priority request");
-                    essenceDataProvider.processPriorityEssence((byte[]) response.body());
+                    essenceDataProvider.processPriorityEssence(response.getInputStream().readAllBytes());
                 }
             }
 
@@ -140,10 +150,10 @@ public class SynchronizeTask implements Runnable {
         }
     }
 
-    private void updateTraceparent(final HttpResponse response) {
-        List<String> traceparentValues = response.headers().allValues(RequestHelper.KEY_TRACEPARENT);
-        if (!traceparentValues.isEmpty()) {
-            traceparent = traceparentValues.get(traceparentValues.size() - 1);
+    private void updateTraceparent(final HttpURLConnection response) {
+        String respondingTraceparent = response.getHeaderField(KEY_TRACEPARENT);
+        if (respondingTraceparent != null && !respondingTraceparent.isEmpty()) {
+            traceparent = respondingTraceparent;
         } else {
             LOGGER.warn("""
                 Response from Hivemind received that did not have a traceparent 
@@ -151,10 +161,10 @@ public class SynchronizeTask implements Runnable {
         }
     }
 
-    private ContentType getContentType(final HttpResponse response) {
-        List<String> contentTypeValues = response.headers().allValues(RequestHelper.KEY_CONTENT_TYPE);
-        if (!contentTypeValues.isEmpty()) {
-            return ContentType.enumFor(contentTypeValues.get(contentTypeValues.size() - 1));
+    private ContentType getContentType(final HttpURLConnection response) {
+        String respondingContentType = response.getHeaderField(KEY_CONTENT_TYPE);
+        if (respondingContentType != null && !respondingContentType.isEmpty()) {
+            return ContentType.enumFor(respondingContentType);
         } else {
             LOGGER.warn("""
                 Response from Hivemind received that did not have a content-type 
@@ -164,8 +174,8 @@ public class SynchronizeTask implements Runnable {
         return null;
     }
 
-    private boolean isSuccessful(final HttpResponse response) {
-        int code = response.statusCode();
+    private boolean isSuccessful(final HttpURLConnection response) throws IOException {
+        int code = response.getResponseCode();
         return code == 200 || code == 204 || code == 409;
     }
 }

@@ -103,6 +103,7 @@ public class SynchronizeTask implements Runnable {
         return buidler.build();
     }
 
+    // FUTURE_WORK: Now reading all bytes to the heap, better in some cases to buffer
     private void processResponse(final HttpResponse response) {
         if (traceparent == null || traceparent.isEmpty()) {
             updateTraceparent(response);

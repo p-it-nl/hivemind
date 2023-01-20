@@ -15,12 +15,13 @@
  */
 package io.hivemind.synchronizer.essence;
 
-import io.hivemind.data.comparison.EssenceValidator;
-import io.hivemind.exception.HiveCeption;
-import io.hivemind.exception.InvalidEssenceException;
-import io.hivemind.exception.NotSupportedException;
+import io.hivemind.synchronizer.HiveEssenceDataProvider;
 import io.hivemind.synchronizer.HiveEssencePart;
 import io.hivemind.synchronizer.HiveResource;
+import io.hivemind.synchronizer.exception.HiveCeption;
+import io.hivemind.synchronizer.exception.InvalidEssenceException;
+import io.hivemind.synchronizer.exception.NotSupportedException;
+import io.hivemind.synchronizer.validator.EssenceValidator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,15 +40,14 @@ public class EssenceTranslator {
     private static final byte SEPARATOR = ";".getBytes()[0];
     private static final byte SPLITTER = ",".getBytes()[0];
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EssenceTranslator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HiveEssenceDataProvider.class);
 
     /**
      * Determine the resources that correspond to the essence
      *
      * @param essence the essence to determine for
      * @return the found resources or empty
-     * @throws io.hivemind.exception.InvalidEssenceException when an invalid
-     * essence has been provided
+     * @throws InvalidEssenceException when an invalid essence has been provided
      */
     public List<HiveResource> interpolateResourcesFromEssence(final byte[] essence) throws InvalidEssenceException {
         List<HiveResource> resources = new ArrayList<>();
@@ -73,7 +73,7 @@ public class EssenceTranslator {
                 LOGGER.error("Failed to determine essence part from essence", ex);
             }
         } else {
-            LOGGER.debug("Attempted to interpolate resources, but no essence was provided");
+            LOGGER.error("Attempted to interpolate resources, but no essence was provided");
         }
 
         return resources;

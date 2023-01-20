@@ -15,8 +15,8 @@
  */
 package io.hivemind.synchronizer;
 
-import io.hivemind.configuration.SynchronizerConfiguration;
-import io.hivemind.exception.HiveSynchronizationException;
+import io.hivemind.synchronizer.configuration.SynchronizerConfiguration;
+import io.hivemind.synchronizer.exception.HiveSynchronizationException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +35,7 @@ public class HiveSynchronizer {
     private final ResourceProvider resourceProvider;
     private final SynchronizerConfiguration config;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HiveSynchronizer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HiveEssenceDataProvider.class);
 
     public HiveSynchronizer(final ResourceProvider resourceProvider, final SynchronizerConfiguration config) {
         LOGGER.info("Setting up the HiveSynchronizer");

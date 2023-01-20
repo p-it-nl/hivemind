@@ -15,11 +15,11 @@
  */
 package io.hivemind.synchronizer.essence;
 
-import io.hivemind.exception.HiveCeption;
-import io.hivemind.exception.HiveException;
-import io.hivemind.exception.InvalidEssenceException;
 import io.hivemind.synchronizer.HiveEssencePart;
 import io.hivemind.synchronizer.HiveResource;
+import io.hivemind.synchronizer.exception.HiveCeption;
+import io.hivemind.synchronizer.exception.HiveException;
+import io.hivemind.synchronizer.exception.InvalidEssenceException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

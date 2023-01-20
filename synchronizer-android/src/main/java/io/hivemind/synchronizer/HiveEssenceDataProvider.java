@@ -16,7 +16,7 @@
 package io.hivemind.synchronizer;
 
 import io.hivemind.synchronizer.essence.EssenceTranslator;
-import io.hivemind.exception.InvalidEssenceException;
+import io.hivemind.synchronizer.exception.InvalidEssenceException;
 import java.util.List;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
