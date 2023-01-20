@@ -1,5 +1,5 @@
 *** Variables ***
-${uri}=    http://localhost:8000
+${uri}=    http://192.168.178.108:8000
 
 ${traceparentA}=    traceparentA
 ${traceparentB}=    traceparentB

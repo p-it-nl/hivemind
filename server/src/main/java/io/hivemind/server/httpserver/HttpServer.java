@@ -18,13 +18,12 @@ package io.hivemind.server.httpserver;
 import io.hivemind.App;
 import io.hivemind.HiveServer;
 import io.hivemind.configuration.HiveConfig;
-import io.hivemind.constant.Clear;
 import io.hivemind.exception.HiveCeption;
 import io.hivemind.exception.UnstartableException;
 import java.io.IOException;
-import static java.lang.System.Logger.Level.ERROR;
 import java.net.InetSocketAddress;
 
+import static java.lang.System.Logger.Level.ERROR;
 /**
  * Httpserver implementation for hive server
  *
