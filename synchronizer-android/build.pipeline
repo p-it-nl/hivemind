@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    tools {
+        maven 'MAVEN_HOME'
+    }
+
+    stages {
+        stage('Clone hivemind') {
+            steps {
+                git url: 'git@{url}:hivemind.git'
+            }
+		}
+        
+		stage('Build hivemind') {
+		    steps {
+			   sh 'cd synchronizer-android && mvn clean install'
+		    }
+		}
+		
+		stage('TODO: execute tests') {
+		    steps {
+		        sh 'echo "perform tests"'
+		    }
+		}
+    }
+    post { 
+        always { 
+            deleteDir()
+       }
+    }
+}
