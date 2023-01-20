@@ -19,12 +19,15 @@ package io.hivemind.constant;
  * Identification for content types the application differs in. Currently only
  * interested in it being hive-essence or not
  *
+ * FUTURE_WORK: Implement more content-types, currently only working with
+ * serialized objects
+ *
  * @author Patrick-4488
  */
 public enum ContentType {
 
     HIVE_ESSENCE("application/hive-essence"),
-    OTHER("");
+    OTHER("application/ser");
 
     private final String value;
     private static final String SLASH = "/";

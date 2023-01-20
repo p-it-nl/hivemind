@@ -24,7 +24,7 @@ package io.hivemind.synchronizer.constant;
 public enum ContentType {
 
     HIVE_ESSENCE("application/hive-essence"),
-    OTHER("");
+    OTHER("application/ser");
 
     private final String value;
     private static final String SLASH = "/";
