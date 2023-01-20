@@ -16,6 +16,12 @@ pipeline {
 			   sh 'cd server && mvn clean install'
 		    }
 		}
+				
+		stage('Run sonar-scanner') {
+		    steps {
+		        sh 'sonar-scanner -Dsonar.login={token} -Dsonar.projectBaseDir=server'
+		    }
+		}
 		
 		stage('Copy to hivemind server') {
 		    steps {
