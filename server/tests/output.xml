@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot rpa="false" generated="20230120 14:30:07.224" schemaversion="2" generator="Robot 4.1.3 (Python 2.7.16 on win32)">
-<suite source="C:\Users\Patrick\Desktop\werk_en_hobby\projects\GITHUB\hivemind\server\tests\hivemind-tests.robot" id="s1" name="Hivemind-Tests">
+<robot rpa="false" generated="20230110 16:16:03.782" schemaversion="2" generator="Robot 4.1.3 (Python 2.7.16 on win32)">
+<suite source="C:\Users\Patrick\Desktop\werk_en_hobby\projects\hivemind\tests\hivemind-tests.robot" id="s1" name="Hivemind-Tests">
 <kw type="SETUP" name="Create Session" library="RequestsLibrary">
 <arg>Hivemind</arg>
 <arg>${uri}</arg>
 <doc>Create Session: create a HTTP session to a server</doc>
-<msg timestamp="20230120 14:30:08.201" level="INFO">Creating Session using : alias=Hivemind, url=http://192.168.178.108:8000, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
-<status status="PASS" endtime="20230120 14:30:08.202" starttime="20230120 14:30:08.201"/>
+<msg timestamp="20230110 16:16:03.933" level="INFO">Creating Session using : alias=Hivemind, url=http://localhost:8000, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" endtime="20230110 16:16:03.934" starttime="20230110 16:16:03.933"/>
 </kw>
 <test id="s1-t1" name="Synchronizing data from A to B">
 <kw name="Create Dictionary" library="BuiltIn">
@@ -14,8 +14,8 @@
 <arg>traceparent=${traceparentA}</arg>
 <arg>content-type=${hiveEssenceHeader}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20230120 14:30:08.203" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'application/hive-essence'}</msg>
-<status status="PASS" endtime="20230120 14:30:08.203" starttime="20230120 14:30:08.202"/>
+<msg timestamp="20230110 16:16:03.935" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'application/hive-essence'}</msg>
+<status status="PASS" endtime="20230110 16:16:03.935" starttime="20230110 16:16:03.934"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${resp}</var>
@@ -24,32 +24,32 @@
 <arg>data=${essenceShort}</arg>
 <arg>headers=${headers}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.218" level="INFO">POST Request : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:03.982" level="INFO">POST Request : url=http://localhost:8000/ 
  path_url=/ 
  headers={'Content-Length': '8', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1', 'Connection': 'keep-alive', 'traceparent': u'traceparentA', 'content-type': u'application/hive-essence'} 
  body=1,1;2,1; 
  </msg>
-<msg timestamp="20230120 14:30:08.218" level="INFO">POST Response : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:03.982" level="INFO">POST Response : url=http://localhost:8000/ 
  status=204, reason=No Content 
- headers={'Traceparent': 'traceparentA', 'Date': 'Fri, 20 Jan 2023 13:30:10 GMT'} 
+ headers={'Traceparent': 'traceparentA', 'Date': 'Tue, 10 Jan 2023 15:16:03 GMT'} 
  body=None 
  </msg>
-<msg timestamp="20230120 14:30:08.218" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
-<status status="PASS" endtime="20230120 14:30:08.218" starttime="20230120 14:30:08.204"/>
+<msg timestamp="20230110 16:16:03.982" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
+<status status="PASS" endtime="20230110 16:16:03.982" starttime="20230110 16:16:03.936"/>
 </kw>
 <kw name="Status Should Be" library="RequestsLibrary">
 <arg>NO_CONTENT</arg>
 <arg>${resp}</arg>
 <doc>Fails if response status code is different than the expected.</doc>
-<status status="PASS" endtime="20230120 14:30:08.219" starttime="20230120 14:30:08.219"/>
+<status status="PASS" endtime="20230110 16:16:03.983" starttime="20230110 16:16:03.983"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${headers}</var>
 <arg>traceparent=${traceparentB}</arg>
 <arg>content-type=${hiveEssenceHeader}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20230120 14:30:08.220" level="INFO">${headers} = {u'traceparent': u'traceparentB', u'content-type': u'application/hive-essence'}</msg>
-<status status="PASS" endtime="20230120 14:30:08.220" starttime="20230120 14:30:08.219"/>
+<msg timestamp="20230110 16:16:03.984" level="INFO">${headers} = {u'traceparent': u'traceparentB', u'content-type': u'application/hive-essence'}</msg>
+<status status="PASS" endtime="20230110 16:16:03.985" starttime="20230110 16:16:03.984"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${resp}</var>
@@ -57,32 +57,32 @@
 <arg>/</arg>
 <arg>headers=${headers}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.225" level="INFO">POST Request : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:03.992" level="INFO">POST Request : url=http://localhost:8000/ 
  path_url=/ 
  headers={'Content-Length': '0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1', 'Connection': 'keep-alive', 'traceparent': u'traceparentB', 'content-type': u'application/hive-essence'} 
  body=None 
  </msg>
-<msg timestamp="20230120 14:30:08.225" level="INFO">POST Response : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:03.992" level="INFO">POST Response : url=http://localhost:8000/ 
  status=204, reason=No Content 
- headers={'Traceparent': 'traceparentB', 'Date': 'Fri, 20 Jan 2023 13:30:10 GMT'} 
+ headers={'Traceparent': 'traceparentB', 'Date': 'Tue, 10 Jan 2023 15:16:03 GMT'} 
  body=None 
  </msg>
-<msg timestamp="20230120 14:30:08.225" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
-<status status="PASS" endtime="20230120 14:30:08.225" starttime="20230120 14:30:08.221"/>
+<msg timestamp="20230110 16:16:03.992" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
+<status status="PASS" endtime="20230110 16:16:03.992" starttime="20230110 16:16:03.985"/>
 </kw>
 <kw name="Status Should Be" library="RequestsLibrary">
 <arg>NO_CONTENT</arg>
 <arg>${resp}</arg>
 <doc>Fails if response status code is different than the expected.</doc>
-<status status="PASS" endtime="20230120 14:30:08.226" starttime="20230120 14:30:08.226"/>
+<status status="PASS" endtime="20230110 16:16:03.993" starttime="20230110 16:16:03.993"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${headers}</var>
 <arg>traceparent=${traceparentA}</arg>
 <arg>content-type=${hiveEssenceHeader}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20230120 14:30:08.227" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'application/hive-essence'}</msg>
-<status status="PASS" endtime="20230120 14:30:08.227" starttime="20230120 14:30:08.227"/>
+<msg timestamp="20230110 16:16:03.994" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'application/hive-essence'}</msg>
+<status status="PASS" endtime="20230110 16:16:03.994" starttime="20230110 16:16:03.994"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${resp}</var>
@@ -91,38 +91,38 @@
 <arg>data=${essenceShort}</arg>
 <arg>headers=${headers}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.285" level="INFO">POST Request : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:03.999" level="INFO">POST Request : url=http://localhost:8000/ 
  path_url=/ 
  headers={'Content-Length': '8', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1', 'Connection': 'keep-alive', 'traceparent': u'traceparentA', 'content-type': u'application/hive-essence'} 
  body=1,1;2,1; 
  </msg>
-<msg timestamp="20230120 14:30:08.286" level="INFO">POST Response : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:03.999" level="INFO">POST Response : url=http://localhost:8000/ 
  status=200, reason=OK 
- headers={'Traceparent': 'traceparentA', 'Date': 'Fri, 20 Jan 2023 13:30:10 GMT', 'Content-length': '8', 'Content-type': 'application/hive-essence'} 
+ headers={'Traceparent': 'traceparentA', 'Date': 'Tue, 10 Jan 2023 15:16:03 GMT', 'Content-length': '8', 'Content-type': 'application/hive-essence'} 
  body=1,1;2,1; 
  </msg>
-<msg timestamp="20230120 14:30:08.286" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
-<status status="PASS" endtime="20230120 14:30:08.286" starttime="20230120 14:30:08.228"/>
+<msg timestamp="20230110 16:16:03.999" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20230110 16:16:03.999" starttime="20230110 16:16:03.995"/>
 </kw>
 <kw name="Status Should Be" library="RequestsLibrary">
 <arg>OK</arg>
 <arg>${resp}</arg>
 <doc>Fails if response status code is different than the expected.</doc>
-<status status="PASS" endtime="20230120 14:30:08.287" starttime="20230120 14:30:08.287"/>
+<status status="PASS" endtime="20230110 16:16:04.000" starttime="20230110 16:16:04.000"/>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <arg>${resp.text}</arg>
 <arg>${essenceShort}</arg>
 <doc>Fails if the given objects are unequal.</doc>
-<status status="PASS" endtime="20230120 14:30:08.289" starttime="20230120 14:30:08.288"/>
+<status status="PASS" endtime="20230110 16:16:04.002" starttime="20230110 16:16:04.001"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${headers}</var>
 <arg>traceparent=${traceparentA}</arg>
 <arg>content-type=${contentHeader}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20230120 14:30:08.290" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'text/plain'}</msg>
-<status status="PASS" endtime="20230120 14:30:08.290" starttime="20230120 14:30:08.290"/>
+<msg timestamp="20230110 16:16:04.003" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'text/plain'}</msg>
+<status status="PASS" endtime="20230110 16:16:04.003" starttime="20230110 16:16:04.002"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${resp}</var>
@@ -131,32 +131,32 @@
 <arg>data=${contentA}</arg>
 <arg>headers=${headers}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.295" level="INFO">POST Request : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.008" level="INFO">POST Request : url=http://localhost:8000/ 
  path_url=/ 
  headers={'Content-Length': '8', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1', 'Connection': 'keep-alive', 'traceparent': u'traceparentA', 'content-type': u'text/plain'} 
  body=contentA 
  </msg>
-<msg timestamp="20230120 14:30:08.295" level="INFO">POST Response : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.008" level="INFO">POST Response : url=http://localhost:8000/ 
  status=204, reason=No Content 
- headers={'Traceparent': 'traceparentA', 'Date': 'Fri, 20 Jan 2023 13:30:10 GMT'} 
+ headers={'Traceparent': 'traceparentA', 'Date': 'Tue, 10 Jan 2023 15:16:04 GMT'} 
  body=None 
  </msg>
-<msg timestamp="20230120 14:30:08.295" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
-<status status="PASS" endtime="20230120 14:30:08.295" starttime="20230120 14:30:08.291"/>
+<msg timestamp="20230110 16:16:04.009" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
+<status status="PASS" endtime="20230110 16:16:04.009" starttime="20230110 16:16:04.004"/>
 </kw>
 <kw name="Status Should Be" library="RequestsLibrary">
 <arg>NO_CONTENT</arg>
 <arg>${resp}</arg>
 <doc>Fails if response status code is different than the expected.</doc>
-<status status="PASS" endtime="20230120 14:30:08.296" starttime="20230120 14:30:08.296"/>
+<status status="PASS" endtime="20230110 16:16:04.010" starttime="20230110 16:16:04.009"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${headers}</var>
 <arg>traceparent=${traceparentB}</arg>
 <arg>content-type=${hiveEssenceHeader}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20230120 14:30:08.297" level="INFO">${headers} = {u'traceparent': u'traceparentB', u'content-type': u'application/hive-essence'}</msg>
-<status status="PASS" endtime="20230120 14:30:08.297" starttime="20230120 14:30:08.297"/>
+<msg timestamp="20230110 16:16:04.011" level="INFO">${headers} = {u'traceparent': u'traceparentB', u'content-type': u'application/hive-essence'}</msg>
+<status status="PASS" endtime="20230110 16:16:04.011" starttime="20230110 16:16:04.010"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${resp}</var>
@@ -164,41 +164,41 @@
 <arg>/</arg>
 <arg>headers=${headers}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.346" level="INFO">POST Request : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.015" level="INFO">POST Request : url=http://localhost:8000/ 
  path_url=/ 
  headers={'Content-Length': '0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1', 'Connection': 'keep-alive', 'traceparent': u'traceparentB', 'content-type': u'application/hive-essence'} 
  body=None 
  </msg>
-<msg timestamp="20230120 14:30:08.346" level="INFO">POST Response : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.016" level="INFO">POST Response : url=http://localhost:8000/ 
  status=200, reason=OK 
- headers={'Traceparent': 'traceparentB', 'Date': 'Fri, 20 Jan 2023 13:30:10 GMT', 'Content-length': '8', 'Content-type': ''} 
+ headers={'Traceparent': 'traceparentB', 'Date': 'Tue, 10 Jan 2023 15:16:04 GMT', 'Content-length': '8', 'Content-type': ''} 
  body=contentA 
  </msg>
-<msg timestamp="20230120 14:30:08.346" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
-<status status="PASS" endtime="20230120 14:30:08.346" starttime="20230120 14:30:08.298"/>
+<msg timestamp="20230110 16:16:04.016" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20230110 16:16:04.016" starttime="20230110 16:16:04.011"/>
 </kw>
 <kw name="Status Should Be" library="RequestsLibrary">
 <arg>OK</arg>
 <arg>${resp}</arg>
 <doc>Fails if response status code is different than the expected.</doc>
-<status status="PASS" endtime="20230120 14:30:08.347" starttime="20230120 14:30:08.347"/>
+<status status="PASS" endtime="20230110 16:16:04.017" starttime="20230110 16:16:04.016"/>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <arg>${resp.text}</arg>
 <arg>${contentA}</arg>
 <doc>Fails if the given objects are unequal.</doc>
-<status status="PASS" endtime="20230120 14:30:08.348" starttime="20230120 14:30:08.348"/>
+<status status="PASS" endtime="20230110 16:16:04.018" starttime="20230110 16:16:04.017"/>
 </kw>
 <doc>A having data, B having no data, will synchronize data to B</doc>
 <tag>A-B</tag>
-<status status="PASS" endtime="20230120 14:30:08.350" starttime="20230120 14:30:08.202"/>
+<status status="PASS" endtime="20230110 16:16:04.019" starttime="20230110 16:16:03.934"/>
 </test>
 <test id="s1-t2" name="Clear After - Synchronizing data from A to B">
 <kw name="Clean">
 <kw name="Log To Console" library="BuiltIn">
 <arg>clearing</arg>
 <doc>Logs the given message to the console.</doc>
-<status status="PASS" endtime="20230120 14:30:08.352" starttime="20230120 14:30:08.352"/>
+<status status="PASS" endtime="20230110 16:16:04.022" starttime="20230110 16:16:04.021"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${resp}</var>
@@ -206,22 +206,22 @@
 <arg>/manager</arg>
 <arg>data=${clearAll}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.361" level="INFO">POST Request : url=http://192.168.178.108:8000/manager 
+<msg timestamp="20230110 16:16:04.035" level="INFO">POST Request : url=http://localhost:8000/manager 
  path_url=/manager 
  headers={'Connection': 'keep-alive', 'Content-Length': '3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1'} 
  body=all 
  </msg>
-<msg timestamp="20230120 14:30:08.361" level="INFO">POST Response : url=http://192.168.178.108:8000/manager 
+<msg timestamp="20230110 16:16:04.035" level="INFO">POST Response : url=http://localhost:8000/manager 
  status=200, reason=OK 
- headers={'Date': 'Fri, 20 Jan 2023 13:30:10 GMT', 'Content-length': '0'} 
+ headers={'Date': 'Tue, 10 Jan 2023 15:16:04 GMT', 'Content-length': '0'} 
  body=None 
  </msg>
-<msg timestamp="20230120 14:30:08.361" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
-<status status="PASS" endtime="20230120 14:30:08.361" starttime="20230120 14:30:08.352"/>
+<msg timestamp="20230110 16:16:04.035" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20230110 16:16:04.035" starttime="20230110 16:16:04.022"/>
 </kw>
-<status status="PASS" endtime="20230120 14:30:08.361" starttime="20230120 14:30:08.351"/>
+<status status="PASS" endtime="20230110 16:16:04.035" starttime="20230110 16:16:04.021"/>
 </kw>
-<status status="PASS" endtime="20230120 14:30:08.362" starttime="20230120 14:30:08.351"/>
+<status status="PASS" endtime="20230110 16:16:04.036" starttime="20230110 16:16:04.020"/>
 </test>
 <test id="s1-t3" name="Synchronizing data from A but not a valid essence">
 <kw name="Create Dictionary" library="BuiltIn">
@@ -229,8 +229,8 @@
 <arg>traceparent=${traceparentA}</arg>
 <arg>content-type=${hiveEssenceHeader}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20230120 14:30:08.364" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'application/hive-essence'}</msg>
-<status status="PASS" endtime="20230120 14:30:08.364" starttime="20230120 14:30:08.364"/>
+<msg timestamp="20230110 16:16:04.039" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'application/hive-essence'}</msg>
+<status status="PASS" endtime="20230110 16:16:04.039" starttime="20230110 16:16:04.038"/>
 </kw>
 <kw name="Run Keyword And Ignore Error" library="BuiltIn">
 <var>${resp}</var>
@@ -246,32 +246,32 @@
 <arg>data=${essenceInvalid}</arg>
 <arg>headers=${headers}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.424" level="INFO">POST Request : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.044" level="INFO">POST Request : url=http://localhost:8000/ 
  path_url=/ 
  headers={'Content-Length': '20', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1', 'Connection': 'keep-alive', 'traceparent': u'traceparentA', 'content-type': u'application/hive-essence'} 
  body=mockedinvalidessence 
  </msg>
-<msg timestamp="20230120 14:30:08.424" level="INFO">POST Response : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.045" level="INFO">POST Response : url=http://localhost:8000/ 
  status=400, reason=Bad Request 
- headers={'Traceparent': 'traceparentA', 'Date': 'Fri, 20 Jan 2023 13:30:10 GMT', 'Content-length': '113'} 
+ headers={'Traceparent': 'traceparentA', 'Date': 'Tue, 10 Jan 2023 15:16:04 GMT', 'Content-length': '113'} 
  body=The received hive essence is not valid. Expected is a list of bytes containing:
 {id},{version};{id},{version}.... 
  </msg>
-<msg timestamp="20230120 14:30:08.426" level="FAIL">HTTPError: 400 Client Error: Bad Request for url: http://192.168.178.108:8000/</msg>
-<status status="FAIL" endtime="20230120 14:30:08.426" starttime="20230120 14:30:08.365"/>
+<msg timestamp="20230110 16:16:04.046" level="FAIL">HTTPError: 400 Client Error: Bad Request for url: http://localhost:8000/</msg>
+<status status="FAIL" endtime="20230110 16:16:04.046" starttime="20230110 16:16:04.040"/>
 </kw>
-<msg timestamp="20230120 14:30:08.426" level="INFO">${resp} = ('FAIL', u'HTTPError: 400 Client Error: Bad Request for url: http://192.168.178.108:8000/')</msg>
-<status status="PASS" endtime="20230120 14:30:08.426" starttime="20230120 14:30:08.365"/>
+<msg timestamp="20230110 16:16:04.046" level="INFO">${resp} = ('FAIL', u'HTTPError: 400 Client Error: Bad Request for url: http://localhost:8000/')</msg>
+<status status="PASS" endtime="20230110 16:16:04.046" starttime="20230110 16:16:04.039"/>
 </kw>
 <kw name="Should Contain" library="BuiltIn">
 <arg>${resp[1]}</arg>
 <arg>HTTPError: 400 Client Error</arg>
 <doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
-<status status="PASS" endtime="20230120 14:30:08.428" starttime="20230120 14:30:08.427"/>
+<status status="PASS" endtime="20230110 16:16:04.048" starttime="20230110 16:16:04.047"/>
 </kw>
 <doc>A sending synchronize request but with an invalid essence</doc>
 <tag>A essence invalid</tag>
-<status status="PASS" endtime="20230120 14:30:08.428" starttime="20230120 14:30:08.363"/>
+<status status="PASS" endtime="20230110 16:16:04.048" starttime="20230110 16:16:04.038"/>
 </test>
 <test id="s1-t4" name="Synchronizing data from A to B with B performing priority update for A">
 <kw name="Create Dictionary" library="BuiltIn">
@@ -279,8 +279,8 @@
 <arg>traceparent=${traceparentA}</arg>
 <arg>content-type=${hiveEssenceHeader}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20230120 14:30:08.431" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'application/hive-essence'}</msg>
-<status status="PASS" endtime="20230120 14:30:08.431" starttime="20230120 14:30:08.430"/>
+<msg timestamp="20230110 16:16:04.051" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'application/hive-essence'}</msg>
+<status status="PASS" endtime="20230110 16:16:04.051" starttime="20230110 16:16:04.050"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${resp}</var>
@@ -289,32 +289,32 @@
 <arg>data=${essence}</arg>
 <arg>headers=${headers}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.437" level="INFO">POST Request : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.055" level="INFO">POST Request : url=http://localhost:8000/ 
  path_url=/ 
  headers={'Content-Length': '36', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1', 'Connection': 'keep-alive', 'traceparent': u'traceparentA', 'content-type': u'application/hive-essence'} 
  body=1,1;2,1;3,1;4,1;5,1;6,1;7,1;8,1;9,1; 
  </msg>
-<msg timestamp="20230120 14:30:08.437" level="INFO">POST Response : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.055" level="INFO">POST Response : url=http://localhost:8000/ 
  status=204, reason=No Content 
- headers={'Traceparent': 'traceparentA', 'Date': 'Fri, 20 Jan 2023 13:30:10 GMT'} 
+ headers={'Traceparent': 'traceparentA', 'Date': 'Tue, 10 Jan 2023 15:16:04 GMT'} 
  body=None 
  </msg>
-<msg timestamp="20230120 14:30:08.437" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
-<status status="PASS" endtime="20230120 14:30:08.437" starttime="20230120 14:30:08.432"/>
+<msg timestamp="20230110 16:16:04.055" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
+<status status="PASS" endtime="20230110 16:16:04.055" starttime="20230110 16:16:04.051"/>
 </kw>
 <kw name="Status Should Be" library="RequestsLibrary">
 <arg>NO_CONTENT</arg>
 <arg>${resp}</arg>
 <doc>Fails if response status code is different than the expected.</doc>
-<status status="PASS" endtime="20230120 14:30:08.438" starttime="20230120 14:30:08.438"/>
+<status status="PASS" endtime="20230110 16:16:04.056" starttime="20230110 16:16:04.056"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${headers}</var>
 <arg>traceparent=${traceparentB}</arg>
 <arg>content-type=${hiveEssenceHeader}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20230120 14:30:08.439" level="INFO">${headers} = {u'traceparent': u'traceparentB', u'content-type': u'application/hive-essence'}</msg>
-<status status="PASS" endtime="20230120 14:30:08.439" starttime="20230120 14:30:08.439"/>
+<msg timestamp="20230110 16:16:04.057" level="INFO">${headers} = {u'traceparent': u'traceparentB', u'content-type': u'application/hive-essence'}</msg>
+<status status="PASS" endtime="20230110 16:16:04.057" starttime="20230110 16:16:04.057"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${resp}</var>
@@ -323,32 +323,32 @@
 <arg>data=${essence}</arg>
 <arg>headers=${headers}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.443" level="INFO">POST Request : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.062" level="INFO">POST Request : url=http://localhost:8000/ 
  path_url=/ 
  headers={'Content-Length': '36', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1', 'Connection': 'keep-alive', 'traceparent': u'traceparentB', 'content-type': u'application/hive-essence'} 
  body=1,1;2,1;3,1;4,1;5,1;6,1;7,1;8,1;9,1; 
  </msg>
-<msg timestamp="20230120 14:30:08.443" level="INFO">POST Response : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.062" level="INFO">POST Response : url=http://localhost:8000/ 
  status=204, reason=No Content 
- headers={'Traceparent': 'traceparentB', 'Date': 'Fri, 20 Jan 2023 13:30:10 GMT'} 
+ headers={'Traceparent': 'traceparentB', 'Date': 'Tue, 10 Jan 2023 15:16:04 GMT'} 
  body=None 
  </msg>
-<msg timestamp="20230120 14:30:08.443" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
-<status status="PASS" endtime="20230120 14:30:08.444" starttime="20230120 14:30:08.440"/>
+<msg timestamp="20230110 16:16:04.062" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
+<status status="PASS" endtime="20230110 16:16:04.062" starttime="20230110 16:16:04.058"/>
 </kw>
 <kw name="Status Should Be" library="RequestsLibrary">
 <arg>NO_CONTENT</arg>
 <arg>${resp}</arg>
 <doc>Fails if response status code is different than the expected.</doc>
-<status status="PASS" endtime="20230120 14:30:08.444" starttime="20230120 14:30:08.444"/>
+<status status="PASS" endtime="20230110 16:16:04.063" starttime="20230110 16:16:04.063"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${headers}</var>
 <arg>traceparent=${traceparentB}</arg>
 <arg>content-type=${hiveEssenceHeader}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20230120 14:30:08.445" level="INFO">${headers} = {u'traceparent': u'traceparentB', u'content-type': u'application/hive-essence'}</msg>
-<status status="PASS" endtime="20230120 14:30:08.445" starttime="20230120 14:30:08.445"/>
+<msg timestamp="20230110 16:16:04.064" level="INFO">${headers} = {u'traceparent': u'traceparentB', u'content-type': u'application/hive-essence'}</msg>
+<status status="PASS" endtime="20230110 16:16:04.064" starttime="20230110 16:16:04.064"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${resp}</var>
@@ -357,32 +357,32 @@
 <arg>data=${essenceShort}</arg>
 <arg>headers=${headers}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.450" level="INFO">POST Request : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.069" level="INFO">POST Request : url=http://localhost:8000/ 
  path_url=/ 
  headers={'Content-Length': '8', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1', 'Connection': 'keep-alive', 'traceparent': u'traceparentB', 'content-type': u'application/hive-essence'} 
  body=1,1;2,1; 
  </msg>
-<msg timestamp="20230120 14:30:08.450" level="INFO">POST Response : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.069" level="INFO">POST Response : url=http://localhost:8000/ 
  status=204, reason=No Content 
- headers={'Traceparent': 'traceparentB', 'Date': 'Fri, 20 Jan 2023 13:30:10 GMT'} 
+ headers={'Traceparent': 'traceparentB', 'Date': 'Tue, 10 Jan 2023 15:16:04 GMT'} 
  body=None 
  </msg>
-<msg timestamp="20230120 14:30:08.450" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
-<status status="PASS" endtime="20230120 14:30:08.450" starttime="20230120 14:30:08.446"/>
+<msg timestamp="20230110 16:16:04.069" level="INFO">${resp} = &lt;Response [204]&gt;</msg>
+<status status="PASS" endtime="20230110 16:16:04.069" starttime="20230110 16:16:04.065"/>
 </kw>
 <kw name="Status Should Be" library="RequestsLibrary">
 <arg>NO_CONTENT</arg>
 <arg>${resp}</arg>
 <doc>Fails if response status code is different than the expected.</doc>
-<status status="PASS" endtime="20230120 14:30:08.451" starttime="20230120 14:30:08.451"/>
+<status status="PASS" endtime="20230110 16:16:04.070" starttime="20230110 16:16:04.069"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${headers}</var>
 <arg>traceparent=${traceparentA}</arg>
 <arg>content-type=${hiveEssenceHeader}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20230120 14:30:08.452" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'application/hive-essence'}</msg>
-<status status="PASS" endtime="20230120 14:30:08.452" starttime="20230120 14:30:08.452"/>
+<msg timestamp="20230110 16:16:04.072" level="INFO">${headers} = {u'traceparent': u'traceparentA', u'content-type': u'application/hive-essence'}</msg>
+<status status="PASS" endtime="20230110 16:16:04.072" starttime="20230110 16:16:04.071"/>
 </kw>
 <kw name="Run Keyword And Ignore Error" library="BuiltIn">
 <var>${resp}</var>
@@ -398,38 +398,38 @@
 <arg>data=${essence}</arg>
 <arg>headers=${headers}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.518" level="INFO">POST Request : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.077" level="INFO">POST Request : url=http://localhost:8000/ 
  path_url=/ 
  headers={'Content-Length': '36', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1', 'Connection': 'keep-alive', 'traceparent': u'traceparentA', 'content-type': u'application/hive-essence'} 
  body=1,1;2,1;3,1;4,1;5,1;6,1;7,1;8,1;9,1; 
  </msg>
-<msg timestamp="20230120 14:30:08.519" level="INFO">POST Response : url=http://192.168.178.108:8000/ 
+<msg timestamp="20230110 16:16:04.077" level="INFO">POST Response : url=http://localhost:8000/ 
  status=409, reason=Conflict 
- headers={'Traceparent': 'traceparentA', 'Date': 'Fri, 20 Jan 2023 13:30:10 GMT', 'Content-length': '8', 'Content-type': 'application/hive-essence'} 
+ headers={'Traceparent': 'traceparentA', 'Date': 'Tue, 10 Jan 2023 15:16:04 GMT', 'Content-length': '8', 'Content-type': 'application/hive-essence'} 
  body=1,1;2,1; 
  </msg>
-<msg timestamp="20230120 14:30:08.519" level="FAIL">HTTPError: 409 Client Error: Conflict for url: http://192.168.178.108:8000/</msg>
-<status status="FAIL" endtime="20230120 14:30:08.519" starttime="20230120 14:30:08.453"/>
+<msg timestamp="20230110 16:16:04.077" level="FAIL">HTTPError: 409 Client Error: Conflict for url: http://localhost:8000/</msg>
+<status status="FAIL" endtime="20230110 16:16:04.077" starttime="20230110 16:16:04.072"/>
 </kw>
-<msg timestamp="20230120 14:30:08.520" level="INFO">${resp} = ('FAIL', u'HTTPError: 409 Client Error: Conflict for url: http://192.168.178.108:8000/')</msg>
-<status status="PASS" endtime="20230120 14:30:08.520" starttime="20230120 14:30:08.453"/>
+<msg timestamp="20230110 16:16:04.078" level="INFO">${resp} = ('FAIL', u'HTTPError: 409 Client Error: Conflict for url: http://localhost:8000/')</msg>
+<status status="PASS" endtime="20230110 16:16:04.078" starttime="20230110 16:16:04.072"/>
 </kw>
 <kw name="Should Contain" library="BuiltIn">
 <arg>${resp[1]}</arg>
 <arg>HTTPError: 409 Client Error</arg>
 <doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
-<status status="PASS" endtime="20230120 14:30:08.521" starttime="20230120 14:30:08.520"/>
+<status status="PASS" endtime="20230110 16:16:04.079" starttime="20230110 16:16:04.078"/>
 </kw>
 <doc>A having data, B having data, B will synchronize priority request data to A</doc>
 <tag>B-A B priority</tag>
-<status status="PASS" endtime="20230120 14:30:08.522" starttime="20230120 14:30:08.430"/>
+<status status="PASS" endtime="20230110 16:16:04.080" starttime="20230110 16:16:04.049"/>
 </test>
 <test id="s1-t5" name="Clear After - Synchronizing data from A to B with B performing priority update for A">
 <kw name="Clean">
 <kw name="Log To Console" library="BuiltIn">
 <arg>clearing</arg>
 <doc>Logs the given message to the console.</doc>
-<status status="PASS" endtime="20230120 14:30:08.525" starttime="20230120 14:30:08.524"/>
+<status status="PASS" endtime="20230110 16:16:04.083" starttime="20230110 16:16:04.082"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${resp}</var>
@@ -437,25 +437,25 @@
 <arg>/manager</arg>
 <arg>data=${clearAll}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20230120 14:30:08.533" level="INFO">POST Request : url=http://192.168.178.108:8000/manager 
+<msg timestamp="20230110 16:16:04.097" level="INFO">POST Request : url=http://localhost:8000/manager 
  path_url=/manager 
  headers={'Connection': 'keep-alive', 'Content-Length': '3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'User-Agent': 'python-requests/2.27.1'} 
  body=all 
  </msg>
-<msg timestamp="20230120 14:30:08.533" level="INFO">POST Response : url=http://192.168.178.108:8000/manager 
+<msg timestamp="20230110 16:16:04.097" level="INFO">POST Response : url=http://localhost:8000/manager 
  status=200, reason=OK 
- headers={'Date': 'Fri, 20 Jan 2023 13:30:10 GMT', 'Content-length': '0'} 
+ headers={'Date': 'Tue, 10 Jan 2023 15:16:04 GMT', 'Content-length': '0'} 
  body=None 
  </msg>
-<msg timestamp="20230120 14:30:08.533" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
-<status status="PASS" endtime="20230120 14:30:08.533" starttime="20230120 14:30:08.525"/>
+<msg timestamp="20230110 16:16:04.097" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20230110 16:16:04.097" starttime="20230110 16:16:04.083"/>
 </kw>
-<status status="PASS" endtime="20230120 14:30:08.533" starttime="20230120 14:30:08.524"/>
+<status status="PASS" endtime="20230110 16:16:04.097" starttime="20230110 16:16:04.082"/>
 </kw>
-<status status="PASS" endtime="20230120 14:30:08.534" starttime="20230120 14:30:08.523"/>
+<status status="PASS" endtime="20230110 16:16:04.098" starttime="20230110 16:16:04.082"/>
 </test>
 <doc>Test suite for Hivemind</doc>
-<status status="PASS" endtime="20230120 14:30:08.535" starttime="20230120 14:30:07.227"/>
+<status status="PASS" endtime="20230110 16:16:04.100" starttime="20230110 16:16:03.785"/>
 </suite>
 <statistics>
 <total>
