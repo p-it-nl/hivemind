@@ -15,7 +15,7 @@
  */
 package io.hivemind.server.httpserver;
 
-import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpExchange;//NOSONAR, com.sun is fine
 import io.hivemind.constant.ContentType;
 import io.hivemind.helper.RequestHelper;
 import java.util.List;

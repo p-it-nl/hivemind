@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static java.lang.System.Logger.Level.ERROR;
+import java.util.List;
 
 /**
  * Comparator used to determine whether A or B is behind, equal or before
@@ -52,7 +53,7 @@ public class EssenceComparator {
      */
     public ComparisonResult compare(final Data a, final Data b) {
         ComparisonResult result = compareObjects(a, b);
-        if (result == null) {
+        if (result == null && a != null && b != null) {
             result = compareData(a, b);
         }
 
@@ -123,9 +124,7 @@ public class EssenceComparator {
         String sequenceB = new String(dataB);
 
         Set<String> partsA = new LinkedHashSet<>();
-        for (String partA : sequenceA.split(SEPARATOR)) {
-            partsA.add(partA);
-        }
+        partsA.addAll(List.of(sequenceA.split(SEPARATOR)));
 
         Set<String> differences = new LinkedHashSet<>(partsA);
         for (String partB : sequenceB.split(SEPARATOR)) {
@@ -185,17 +184,15 @@ public class EssenceComparator {
             totalD += diffResult[i];
             totalM += mirrorResult[i];
 
-            if (totalD == totalM) {
-                continue;
-            }
-
             if (totalD > totalM) {
                 outcome = Outcome.BEHIND;
-                break;
-            } else {
+            } else if (totalD < totalM) {
                 outcome = Outcome.AHEAD;
                 os.reset();
                 os.write(mirror.toByteArray());
+            }
+
+            if (totalD != totalM) {
                 break;
             }
         }

@@ -24,7 +24,7 @@ import java.time.Instant;
  *
  * @author Patrick-4488
  */
-public class ObservedData implements Data, AutoCloseable {
+public class ObservedData implements Data {
 
     private final State state;
     private final Cleaner.Cleanable cleanable;
@@ -70,7 +70,6 @@ public class ObservedData implements Data, AutoCloseable {
         return this.state.timestamp;
     }
 
-    @Override
     public void close() {
         cleanable.clean();
     }

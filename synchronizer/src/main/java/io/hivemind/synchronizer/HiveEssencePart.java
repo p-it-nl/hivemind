@@ -15,12 +15,14 @@
  */
 package io.hivemind.synchronizer;
 
+import java.io.Serializable;
+
 /**
  * The hive essence part representing a single hive resource
  *
  * @author Patrick-4488
  */
-public class HiveEssencePart extends HiveResource {
+public class HiveEssencePart implements HiveResource, Serializable {
 
     private byte[] id;
     private byte[] version;

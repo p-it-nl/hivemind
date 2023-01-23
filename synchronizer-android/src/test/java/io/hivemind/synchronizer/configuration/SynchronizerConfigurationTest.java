@@ -56,9 +56,7 @@ public class SynchronizerConfigurationTest {
         String uri = null;
         ConsistencyModel model = ConsistencyModel.SEQUENTIAL_CONSISTENCY;
 
-        HiveException exception = assertThrows(NotSupportedException.class, () -> {
-            new SynchronizerConfiguration(uri, model);
-        });
+        HiveException exception = assertThrows(NotSupportedException.class, () -> new SynchronizerConfiguration(uri, model));
 
         assertEquals(expected.getMessage(), exception.getLocalizedMessage());
     }

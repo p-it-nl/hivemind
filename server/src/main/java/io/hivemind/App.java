@@ -17,9 +17,7 @@ package io.hivemind;
 
 import io.hivemind.configuration.HiveConfig;
 import io.hivemind.configuration.LogConfig;
-import io.hivemind.exception.HiveCeption;
 import io.hivemind.exception.HiveException;
-import io.hivemind.exception.UnstartableException;
 import io.hivemind.server.netty.NettyServer;
 
 import static java.lang.System.Logger.Level.INFO;
@@ -47,7 +45,7 @@ public class App {
         LOGGER.log(INFO, "Starting Hivemind....");
 
         HiveConfig config = HiveConfig.getInstance();
-        HiveServer server = null;
+        HiveServer server;
         switch (config.getServerType()) {
             case NETTY -> {
                 LOGGER.log(INFO, "Using Netty");
@@ -57,15 +55,14 @@ public class App {
                 LOGGER.log(INFO, "Using httpserver");
                 server = new io.hivemind.server.httpserver.HttpServer(config);
             }
+            default -> {
+                LOGGER.log(INFO, "Using httpserver");
+                server = new io.hivemind.server.httpserver.HttpServer(config);
+            }
         }
 
-        if (server != null) {
-            server.start();
-        } else {
-            throw new UnstartableException(HiveCeption.UNABLE_TO_SETUP_SERVER);
-        }
+        server.start();
 
         LOGGER.log(INFO, "....Hivemind is up and running at port {0}", String.valueOf(config.getPort()));
     }
-
 }

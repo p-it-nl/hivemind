@@ -169,20 +169,9 @@ public class DataProcessor {
 
             Outcome outcome = result.getOutcome();
             if (Outcome.BEHIND == outcome) {
-                latestObserved = new SimpleEntry(traceparent, observedData);
+                latestObserved = new SimpleEntry<>(traceparent, observedData);
             } else if (Outcome.AHEAD == outcome) {
-                boolean changeIsUpdate = isUpdate(comparator, latestObservedData, traceparent);
-                boolean hasDataToReceive = preparedData.containsKey(traceparent);
-                if (changeIsUpdate) {
-                    latestObserved = new SimpleEntry(traceparent, observedData);
-                    for (String synchronizer : storedData.keySet()) {
-                        if (!traceparent.equals(synchronizer)) {
-                            priorityRequest.put(synchronizer, observedData);
-                        }
-                    }
-                } else if (!hasDataToReceive) {
-                    storeDataRequest(new ObservedData(result.getDifference()), traceparent);
-                }
+                processEssenceAhead(result, comparator, latestObservedData, observedData, traceparent);
             }
         }
     }
@@ -213,6 +202,21 @@ public class DataProcessor {
         }
 
         return false;
+    }
+
+    private void processEssenceAhead(final ComparisonResult result, final EssenceComparator comparator, final ObservedData latestObservedData, final ObservedData observedData, final String traceparent) {
+        boolean changeIsUpdate = isUpdate(comparator, latestObservedData, traceparent);
+        boolean hasDataToReceive = preparedData.containsKey(traceparent);
+        if (changeIsUpdate) {
+            latestObserved = new SimpleEntry<>(traceparent, observedData);
+            for (String synchronizer : storedData.keySet()) {
+                if (!traceparent.equals(synchronizer)) {
+                    priorityRequest.put(synchronizer, observedData);
+                }
+            }
+        } else if (!hasDataToReceive) {
+            storeDataRequest(new ObservedData(result.getDifference()), traceparent);
+        }
     }
 
     /**
@@ -274,7 +278,7 @@ public class DataProcessor {
         storedData.put(traceparent, observedData);
 
         if (latestObserved == null) {
-            latestObserved = new SimpleEntry(traceparent, newest);
+            latestObserved = new SimpleEntry<>(traceparent, newest);
         }
     }
 

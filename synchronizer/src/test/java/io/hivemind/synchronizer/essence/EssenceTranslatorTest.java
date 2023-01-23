@@ -85,9 +85,7 @@ public class EssenceTranslatorTest {
         byte[] essence = ESSENCE_INVALID;
         HiveCeption expected = HiveCeption.INVALID_ESSENCE;
 
-        HiveException exception = assertThrows(HiveException.class, () -> {
-            classUnderTest.interpolateResourcesFromEssence(essence);
-        });
+        HiveException exception = assertThrows(HiveException.class, () -> classUnderTest.interpolateResourcesFromEssence(essence));
 
         assertNotNull(exception);
         assertEquals(expected.getMessage(), exception.getLocalizedMessage());
@@ -226,7 +224,7 @@ public class EssenceTranslatorTest {
         return resource;
     }
 
-    private class ResourceLong extends HiveResource {
+    private class ResourceLong implements HiveResource {
 
         private final long id;
         private final long version;
@@ -247,7 +245,7 @@ public class EssenceTranslatorTest {
         }
     }
 
-    private class ResourceInt extends HiveResource {
+    private class ResourceInt implements HiveResource {
 
         private final int id;
         private final int version;

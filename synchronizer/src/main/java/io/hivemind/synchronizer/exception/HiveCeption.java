@@ -22,13 +22,8 @@ package io.hivemind.synchronizer.exception;
  */
 public enum HiveCeption {
 
-    INVALID_ESSENCE("""
-        The received hive essence is not valid. Expected is a list of bytes containing: 
-        {id},{version};{id},{version}.... """
-    ),
-    CONSISTENCY_MODEL_NOT_SUPPORTED("""
-        The requested consistency model is not (yet) supported"""
-    ),
+    INVALID_ESSENCE("The received hive essence is not valid. Expected is a list of bytes containing: {id},{version};{id},{version}.... "),
+    CONSISTENCY_MODEL_NOT_SUPPORTED("The requested consistency model is not (yet) supported"),
     HIVE_RESOURCE_ID_OR_VERSION_NOT_NUMBER("""
         While attemting to generate the essence, a value for either id or version 
         of the hive resources was given which is not a number. This is not (currently) 

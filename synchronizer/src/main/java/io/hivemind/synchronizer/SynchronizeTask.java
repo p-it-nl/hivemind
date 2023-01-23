@@ -70,11 +70,12 @@ public class SynchronizeTask implements Runnable {
                 isDataRequest = false;
                 request = buildEssenceRequest(essenceDataProvider.determineEssence());
             }
-            HttpResponse response = client.send(request, BodyHandlers.ofByteArray());
+            HttpResponse<byte[]> response = client.send(request, BodyHandlers.ofByteArray());
             processResponse(response);
 
             LOGGER.log(INFO, "Synchronization finished");
         } catch (IOException | InterruptedException ex) {
+            Thread.currentThread().interrupt();
             LOGGER.log(INFO, "Synchronization task failed", ex);
         }
     }
@@ -104,39 +105,13 @@ public class SynchronizeTask implements Runnable {
     }
 
     // FUTURE_WORK: Now reading all bytes to the heap, better in some cases to buffer
-    private void processResponse(final HttpResponse response) {
+    private void processResponse(final HttpResponse<byte[]> response) {
         if (traceparent == null || traceparent.isEmpty()) {
             updateTraceparent(response);
         }
 
         if (isSuccessful(response)) {
-            switch (response.statusCode()) {
-                case 204 ->
-                    LOGGER.log(INFO, "Synchronization task succeeded, application is up to date");
-                case 200 -> {
-                    ContentType contentType = getContentType(response);
-                    if (ContentType.HIVE_ESSENCE == contentType) {
-                        LOGGER.log(INFO, "Synchronization task succeeded, application received data request");
-
-                        byte[] respondingEssence = (byte[]) response.body();
-                        if (respondingEssence != null && respondingEssence.length > 0) {
-                            dataToSend = new PreparedData(essenceDataProvider.getDataForEssence(respondingEssence));
-                        }
-                    } else if (ContentType.OTHER == contentType) {
-                        LOGGER.log(INFO, "Synchronization task succeeded, application received data");
-
-                        essenceDataProvider.saveData((byte[]) response.body());
-                    }
-                }
-                case 409 -> {
-                    LOGGER.log(INFO, "Synchronization task succeeded, application received priority request");
-                    essenceDataProvider.processPriorityEssence((byte[]) response.body());
-                }
-            }
-
-            if (isDataRequest) {
-                dataToSend.close();
-            }
+            readResponse(response);
         } else {
             LOGGER.log(ERROR, """
                 Unexpected response code received from Hivemind, this points to 
@@ -145,7 +120,7 @@ public class SynchronizeTask implements Runnable {
         }
     }
 
-    private void updateTraceparent(final HttpResponse response) {
+    private void updateTraceparent(final HttpResponse<byte[]> response) {
         List<String> traceparentValues = response.headers().allValues(KEY_TRACEPARENT);
         if (!traceparentValues.isEmpty()) {
             traceparent = traceparentValues.get(traceparentValues.size() - 1);
@@ -156,7 +131,7 @@ public class SynchronizeTask implements Runnable {
         }
     }
 
-    private ContentType getContentType(final HttpResponse response) {
+    private ContentType getContentType(final HttpResponse<byte[]> response) {
         List<String> contentTypeValues = response.headers().allValues(KEY_CONTENT_TYPE);
         if (!contentTypeValues.isEmpty()) {
             return ContentType.enumFor(contentTypeValues.get(contentTypeValues.size() - 1));
@@ -169,8 +144,41 @@ public class SynchronizeTask implements Runnable {
         return null;
     }
 
-    private boolean isSuccessful(final HttpResponse response) {
+    private boolean isSuccessful(final HttpResponse<byte[]> response) {
         int code = response.statusCode();
         return code == 200 || code == 204 || code == 409;
+    }
+
+    private void readResponse(final HttpResponse<byte[]> response) {
+        switch (response.statusCode()) {
+            case 204 ->
+                LOGGER.log(INFO, "Synchronization task succeeded, application is up to date");
+            case 200 -> {
+                ContentType contentType = getContentType(response);
+                if (ContentType.HIVE_ESSENCE == contentType) {
+                    LOGGER.log(INFO, "Synchronization task succeeded, application received data request");
+
+                    byte[] respondingEssence = response.body();
+                    if (respondingEssence != null && respondingEssence.length > 0) {
+                        dataToSend = new PreparedData(essenceDataProvider.getDataForEssence(respondingEssence));
+                    }
+                } else if (ContentType.OTHER == contentType) {
+                    LOGGER.log(INFO, "Synchronization task succeeded, application received data");
+
+                    essenceDataProvider.saveData(response.body());
+                }
+            }
+            case 409 -> {
+                LOGGER.log(INFO, "Synchronization task succeeded, application received priority request");
+                essenceDataProvider.processPriorityEssence(response.body());
+            }
+            default -> {
+                LOGGER.log(ERROR, "Unexpected response code received from Hivemind, this points to inproper code since the status code has been deemed succesfull");
+            }
+        }
+
+        if (isDataRequest) {
+            dataToSend.close();
+        }
     }
 }

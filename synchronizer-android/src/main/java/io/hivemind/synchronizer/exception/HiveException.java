@@ -22,7 +22,7 @@ package io.hivemind.synchronizer.exception;
  */
 public abstract class HiveException extends Exception {
 
-    public HiveException(final HiveCeption exception) {
+    protected HiveException(final HiveCeption exception) {
         super(exception.getMessage());
     }
 }

@@ -25,6 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class TestUtil {
 
+    private TestUtil() {
+    }
+
     public static void assertAllNull(final Object... objs) {
         for (Object obj : objs) {
             assertNull(obj);

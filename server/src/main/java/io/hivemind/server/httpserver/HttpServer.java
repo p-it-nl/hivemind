@@ -15,7 +15,6 @@
  */
 package io.hivemind.server.httpserver;
 
-import io.hivemind.App;
 import io.hivemind.HiveServer;
 import io.hivemind.configuration.HiveConfig;
 import io.hivemind.exception.HiveCeption;
@@ -24,6 +23,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import static java.lang.System.Logger.Level.ERROR;
+
 /**
  * Httpserver implementation for hive server
  *
@@ -32,9 +32,9 @@ import static java.lang.System.Logger.Level.ERROR;
 public class HttpServer implements HiveServer {
 
     private final HiveConfig config;
-    private com.sun.net.httpserver.HttpServer server;
+    private com.sun.net.httpserver.HttpServer server;//NOSONAR, com.sun is fine
 
-    private static final System.Logger LOGGER = System.getLogger(App.class.getName());
+    private static final System.Logger LOGGER = System.getLogger(HttpServer.class.getName());
 
     public HttpServer(final HiveConfig config) {
         this.config = config;
@@ -43,7 +43,7 @@ public class HttpServer implements HiveServer {
     @Override
     public void start() throws UnstartableException {
         try {
-            server = com.sun.net.httpserver.HttpServer.create(new InetSocketAddress(config.getPort()), 0);
+            server = com.sun.net.httpserver.HttpServer.create(new InetSocketAddress(config.getPort()), 0);//NOSONAR, com.sun is fine
             server.setExecutor(config.getPoolExecutor());
             server.createContext("/", new HiveHandler(config));
             server.createContext("/manager", new ManagerHandler());

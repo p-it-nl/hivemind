@@ -15,8 +15,8 @@
  */
 package io.hivemind.server.httpserver;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpExchange;//NOSONAR, com.sun is fine
+import com.sun.net.httpserver.HttpHandler;//NOSONAR, com.sun is fine
 import io.hivemind.configuration.HiveConfig;
 import io.hivemind.constant.ContentType;
 import io.hivemind.data.DataProcessor;
@@ -41,7 +41,7 @@ import static java.lang.System.Logger.Level.WARNING;
 public class HiveHandler implements HttpHandler {
 
     // FUTURE_WORK: Read the consistency model from config and implement it accordingly
-    private final HiveConfig config;
+    private final HiveConfig config;//NOSONAR
     private final DataProcessor dataProcessor;
 
     private static final System.Logger LOGGER = System.getLogger(HiveHandler.class.getName());
@@ -56,47 +56,13 @@ public class HiveHandler implements HttpHandler {
         LOGGER.log(INFO, "Request received, processing...");
 
         if (exchange != null) {
-            RequestHelper helper = new HttpserverHelper();
+            RequestHelper<HttpExchange> helper = new HttpserverHelper();
             try ( InputStream is = exchange.getRequestBody()) {
                 final byte[] bytes = is.readAllBytes();
 
                 String traceparent = helper.determineTraceparent(exchange);
                 helper.setTraceparent(traceparent, exchange);
-                try {
-                    PreparedData preparedData = dataProcessor.processData(bytes, helper.determineContentType(exchange), traceparent);
-                    if (preparedData != null) {
-                        LOGGER.log(INFO, "Request succeeded with having data with type: {0}",
-                                preparedData.getClass().getSimpleName());
-
-                        byte[] responseData = preparedData.getData();
-                        // FUTURE_WORK: Java 19 - switch to pattern matching
-                        if (preparedData instanceof DataRequest) {
-                            helper.setContentType(ContentType.HIVE_ESSENCE, exchange);
-                            exchange.sendResponseHeaders(200, responseData.length);
-                        } else if (preparedData instanceof PriorityRequest) {
-                            helper.setContentType(ContentType.HIVE_ESSENCE, exchange);
-                            exchange.sendResponseHeaders(409, responseData.length);
-                        } else {
-                            helper.setContentType(ContentType.OTHER, exchange);
-                            exchange.sendResponseHeaders(200, responseData.length);
-                        }
-
-                        try ( OutputStream os = exchange.getResponseBody()) {
-                            os.write(responseData);
-                            os.close();
-                        }
-                    } else {
-                        LOGGER.log(INFO, "Request succeeded, no data required, returning 204");
-                        exchange.sendResponseHeaders(204, -1);
-                    }
-                } catch (InvalidEssenceException ex) {
-                    byte[] exception = ex.getLocalizedMessage().getBytes();
-                    exchange.sendResponseHeaders(400, exception.length);
-                    try ( OutputStream os = exchange.getResponseBody()) {
-                        os.write(exception);
-                        os.close();
-                    }
-                }
+                processData(bytes, exchange, helper, traceparent);
             } catch (IOException ex) {
                 LOGGER.log(ERROR, "Error in request", ex);
                 throw ex;
@@ -105,6 +71,42 @@ public class HiveHandler implements HttpHandler {
             }
         } else {
             LOGGER.log(WARNING, "Request received but no HttpExchange has been provided");
+        }
+    }
+
+    private void processData(final byte[] bytes, final HttpExchange exchange, final RequestHelper<HttpExchange> helper, final String traceparent) throws IOException {
+        try {
+            PreparedData preparedData = dataProcessor.processData(bytes, helper.determineContentType(exchange), traceparent);
+            if (preparedData != null) {
+                LOGGER.log(INFO, "Request succeeded with having data with type: {0}",
+                        preparedData.getClass().getSimpleName());
+
+                byte[] responseData = preparedData.getData();
+                // FUTURE_WORK: Java 19 - switch to pattern matching
+                if (preparedData instanceof DataRequest) {
+                    helper.setContentType(ContentType.HIVE_ESSENCE, exchange);
+                    exchange.sendResponseHeaders(200, responseData.length);
+                } else if (preparedData instanceof PriorityRequest) {
+                    helper.setContentType(ContentType.HIVE_ESSENCE, exchange);
+                    exchange.sendResponseHeaders(409, responseData.length);
+                } else {
+                    helper.setContentType(ContentType.OTHER, exchange);
+                    exchange.sendResponseHeaders(200, responseData.length);
+                }
+
+                try ( OutputStream os = exchange.getResponseBody()) {
+                    os.write(responseData);
+                }
+            } else {
+                LOGGER.log(INFO, "Request succeeded, no data required, returning 204");
+                exchange.sendResponseHeaders(204, -1);
+            }
+        } catch (InvalidEssenceException ex) {
+            byte[] exception = ex.getLocalizedMessage().getBytes();
+            exchange.sendResponseHeaders(400, exception.length);
+            try ( OutputStream os = exchange.getResponseBody()) {
+                os.write(exception);
+            }
         }
     }
 }

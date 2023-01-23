@@ -15,15 +15,13 @@
  */
 package io.hivemind.synchronizer;
 
-import java.io.Serializable;
-
 /**
  * Hive resources is: the singular object (can be part of a collection) to
  * synchronize with the hive.
  *
  * @author Patrick-4488
  */
-public abstract class HiveResource implements Serializable {
+public interface HiveResource {
 
     /**
      * Since the id is being send as a byte array of strings use this method to
@@ -43,7 +41,7 @@ public abstract class HiveResource implements Serializable {
      *
      * @return the string value of id
      */
-    public String getIdString() {
+    default String getIdString() {
         byte[] idBytes = (byte[]) getId();
         if (idBytes != null) {
             return new String(idBytes);
@@ -71,7 +69,7 @@ public abstract class HiveResource implements Serializable {
      *
      * @return the string value of version
      */
-    public String getVersionString() {
+    default String getVersionString() {
         byte[] versionBytes = (byte[]) getVersion();
         if (versionBytes != null) {
             return new String(versionBytes);

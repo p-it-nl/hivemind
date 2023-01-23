@@ -15,8 +15,8 @@
  */
 package io.hivemind.server.httpserver;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpExchange;//NOSONAR, com.sun is fine
+import com.sun.net.httpserver.HttpHandler;//NOSONAR, com.sun is fine
 import io.hivemind.constant.Clear;
 import io.hivemind.exception.HiveRequestException;
 import io.hivemind.manager.HiveManager;
@@ -64,7 +64,6 @@ public class ManagerHandler implements HttpHandler {
                 exchange.sendResponseHeaders(400, exception.length);
                 try ( OutputStream os = exchange.getResponseBody()) {
                     os.write(exception);
-                    os.close();
                 }
             } finally {
                 exchange.close();

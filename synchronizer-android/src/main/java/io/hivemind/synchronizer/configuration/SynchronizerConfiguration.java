@@ -89,7 +89,7 @@ public final class SynchronizerConfiguration {
         periodBetweenRequests = switch (this.consistencyModel) {
             case LOW_FREQUENCY_EVENTUAL_CONSISTENCY -> {
                 throw new NotSupportedException(HiveCeption.CONSISTENCY_MODEL_NOT_SUPPORTED);
-                //yield 300;
+                //yield 300;//NOSONAR
             }
             case EVENTUAL_CONSISTENCY -> {
                 yield 30;

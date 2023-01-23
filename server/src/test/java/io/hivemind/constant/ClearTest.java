@@ -41,9 +41,7 @@ public class ClearTest {
         HiveCeption expected = HiveCeption.UNEXPECTED_VALUE_FOR_CLEAR_RECEIVED_BY_MANAGER;
         String value = null;
 
-        HiveException exception = assertThrows(HiveException.class, () -> {
-            Clear.enumFor(value);
-        });
+        HiveException exception = assertThrows(HiveException.class, () -> Clear.enumFor(value));
 
         assertNotNull(exception);
         assertEquals(expected.getMessage(), exception.getLocalizedMessage());
@@ -54,9 +52,7 @@ public class ClearTest {
         HiveCeption expected = HiveCeption.UNEXPECTED_VALUE_FOR_CLEAR_RECEIVED_BY_MANAGER;
         String value = VALUE_EMPTY;
 
-        HiveException exception = assertThrows(HiveException.class, () -> {
-            Clear.enumFor(value);
-        });
+        HiveException exception = assertThrows(HiveException.class, () -> Clear.enumFor(value));
 
         assertNotNull(exception);
         assertEquals(expected.getMessage(), exception.getLocalizedMessage());
@@ -67,9 +63,7 @@ public class ClearTest {
         HiveCeption expected = HiveCeption.UNEXPECTED_VALUE_FOR_CLEAR_RECEIVED_BY_MANAGER;
         String value = VALUE_UNEXPECTED;
 
-        HiveException exception = assertThrows(HiveException.class, () -> {
-            Clear.enumFor(value);
-        });
+        HiveException exception = assertThrows(HiveException.class, () -> Clear.enumFor(value));
 
         assertNotNull(exception);
         assertEquals(expected.getMessage(), exception.getLocalizedMessage());

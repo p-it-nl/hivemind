@@ -31,6 +31,9 @@ public class TraceparentGenerator {
     private static final String TRACE_BETWEEN = "-";
     private static final char[] HEX_OPTIONS = "0123456789abcdef".toCharArray();
 
+    private TraceparentGenerator() {
+    }
+
     /**
      * Generates a traceparent<br>
      * (version id)-(trace id)-(parent id)-(trace options) Example:
@@ -38,7 +41,7 @@ public class TraceparentGenerator {
      *
      * @return the new traceparent
      */
-    public synchronized static String generate() {
+    public static synchronized String generate() {
         StringBuilder sb = new StringBuilder();
         sb.append(VERSION);
         sb.append(TRACE_BETWEEN);

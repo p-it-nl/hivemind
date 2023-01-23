@@ -23,6 +23,9 @@ package io.hivemind.configuration;
  */
 public class LogConfig {
 
+    private LogConfig() {
+    }
+
     /**
      * Configures the logger without additional property files or dependencies
      */

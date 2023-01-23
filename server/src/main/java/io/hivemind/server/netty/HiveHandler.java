@@ -54,11 +54,12 @@ public class HiveHandler extends SimpleChannelInboundHandler<Object> {
     private String traceparent;
 
     // FUTURE_WORK: Read the consistency model from config and implement it accordingly
-    private final HiveConfig config;
+    private final HiveConfig config;//NOSONAR
     private final DataProcessor dataProcessor;
     private final NettyHelper helper;
     private final ByteBuf bodyBuffer;
 
+    private static final String REQUEST_TYPE = "Request is type: {0}";
     private static final String MANAGER_REQUEST = "/manager";
     private static final System.Logger LOGGER = System.getLogger(HiveHandler.class.getName());
 
@@ -101,7 +102,7 @@ public class HiveHandler extends SimpleChannelInboundHandler<Object> {
     }
 
     private void processHttpRequest(final ChannelHandlerContext ctx, final HttpRequest httpRequest) {
-        LOGGER.log(INFO, "Request is type: {0}", HttpRequest.class.getSimpleName());
+        LOGGER.log(INFO, REQUEST_TYPE, HttpRequest.class.getSimpleName());
 
         request = httpRequest;
         if (HttpUtil.is100ContinueExpected(request)) {
@@ -112,7 +113,7 @@ public class HiveHandler extends SimpleChannelInboundHandler<Object> {
     }
 
     private void processHttpContent(final ChannelHandlerContext ctx, final HttpContent httpContent) {
-        LOGGER.log(INFO, "Request is type: {0}", HttpContent.class.getSimpleName());
+        LOGGER.log(INFO, REQUEST_TYPE, HttpContent.class.getSimpleName());
 
         ByteBuf content = httpContent.content();
         if (content.isReadable()) {
@@ -120,7 +121,7 @@ public class HiveHandler extends SimpleChannelInboundHandler<Object> {
         }
 
         if (httpContent instanceof LastHttpContent) {
-            LOGGER.log(INFO, "Request is type: {0}", LastHttpContent.class.getSimpleName());
+            LOGGER.log(INFO, REQUEST_TYPE, LastHttpContent.class.getSimpleName());
 
             byte[] responseData = new byte[0];
             FullHttpResponse response;
@@ -165,7 +166,7 @@ public class HiveHandler extends SimpleChannelInboundHandler<Object> {
     }
 
     private void proccessManagementRequest(final ChannelHandlerContext ctx, final HttpContent httpContent) {
-        LOGGER.log(INFO, "Request is type: {0}", HttpContent.class.getSimpleName());
+        LOGGER.log(INFO, REQUEST_TYPE, HttpContent.class.getSimpleName());
 
         ByteBuf content = httpContent.content();
         if (content.isReadable()) {
@@ -173,13 +174,13 @@ public class HiveHandler extends SimpleChannelInboundHandler<Object> {
         }
 
         if (httpContent instanceof LastHttpContent) {
-            LOGGER.log(INFO, "Request is type: {0}", LastHttpContent.class.getSimpleName());
+            LOGGER.log(INFO, REQUEST_TYPE, LastHttpContent.class.getSimpleName());
 
             FullHttpResponse response;
             try {
                 HiveManager hiveManager = new HiveManager();
                 final byte[] bytes = readData();
-                if (bytes != null && bytes.length > 0) {
+                if (bytes.length > 0) {
                     switch (Clear.enumFor(new String(bytes))) {
                         case INERT ->
                             hiveManager.clearInertState();

@@ -15,7 +15,6 @@
  */
 package io.hivemind.server.netty;
 
-import io.hivemind.App;
 import io.hivemind.HiveServer;
 import io.hivemind.configuration.HiveConfig;
 import io.hivemind.exception.HiveCeption;
@@ -42,7 +41,7 @@ public class NettyServer implements HiveServer {
 
     private final HiveConfig config;
 
-    private static final System.Logger LOGGER = System.getLogger(App.class.getName());
+    private static final System.Logger LOGGER = System.getLogger(NettyServer.class.getName());
 
     public NettyServer(final HiveConfig config) {
         this.config = config;
@@ -63,6 +62,7 @@ public class NettyServer implements HiveServer {
             ch.closeFuture().sync();
         } catch (InterruptedException ex) {
             LOGGER.log(ERROR, "Not able to start Netty", ex);
+            Thread.currentThread().interrupt();
             throw new UnstartableException(HiveCeption.NETTY_FAILED_TO_BOOT);
         } finally {
             stop();

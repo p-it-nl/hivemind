@@ -16,6 +16,7 @@
 package io.hivemind.example.synchronizer;
 
 import io.hivemind.synchronizer.HiveResource;
+import java.io.Serializable;
 
 /**
  * Example of hive resource, this instance provides only a set of example values
@@ -23,7 +24,7 @@ import io.hivemind.synchronizer.HiveResource;
  *
  * @author Patrick-4488
  */
-public class SomeData extends HiveResource {
+public class SomeData implements HiveResource, Serializable {
 
     private final long id;
     private final long version;
@@ -38,7 +39,7 @@ public class SomeData extends HiveResource {
         this.someMoreData = someMoreData;
         this.someBooleanData = someBooleanData;
     }
-    
+
     @Override
     public Object getId() {
         return id;
@@ -59,5 +60,5 @@ public class SomeData extends HiveResource {
 
     public boolean isSomeBooleanData() {
         return someBooleanData;
-    }    
+    }
 }

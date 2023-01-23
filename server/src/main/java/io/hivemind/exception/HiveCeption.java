@@ -22,22 +22,14 @@ package io.hivemind.exception;
  */
 public enum HiveCeption {
 
-    MISSING_APP_PROPERTIES("""
-        Not able to read app.properties file in the classpath, resolve this issue in order to use the application"""
-    ),
+    MISSING_APP_PROPERTIES("Not able to read app.properties file in the classpath, resolve this issue in order to use the application"),
     INVALID_APP_PROPERTIES("""
         Not able to read app.properties file in the classpath, the file might be 
         in incorrect format or the application has no permission to read it"""
     ),
-    NETTY_FAILED_TO_BOOT("""
-        The application was unable to boot Netty server, see exception for more details"""
-    ),
-    HTTP_SERVER_FAILED_TO_BOOT("""
-        The application was unable to boot httpserver, see exception for more details"""
-    ),
-    UNABLE_TO_SETUP_SERVER("""
-        The application was not able to set up a server to boot the hive, see exception for more details"""
-    ),
+    NETTY_FAILED_TO_BOOT("The application was unable to boot Netty server, see exception for more details"),
+    HTTP_SERVER_FAILED_TO_BOOT("The application was unable to boot httpserver, see exception for more details"),
+    UNABLE_TO_SETUP_SERVER("The application was not able to set up a server to boot the hive, see exception for more details"),
     INVALID_ESSENCE("""
         The received hive essence is not valid. Expected is a list of bytes containing: 
         {id},{version};{id},{version}.... """

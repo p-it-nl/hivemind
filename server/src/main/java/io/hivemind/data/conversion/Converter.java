@@ -15,6 +15,8 @@
  */
 package io.hivemind.data.conversion;
 
+import static java.lang.System.Logger.Level.DEBUG;
+
 /**
  * Converter for converting to and from bytes.<br>
  * Current implementations include: Long
@@ -25,6 +27,8 @@ package io.hivemind.data.conversion;
  * @param <T> the implementation data type
  */
 public abstract class Converter<T> {
+
+    private static final System.Logger LOGGER = System.getLogger(Converter.class.getName());
 
     /**
      * Generate a new converter for a given type.
@@ -42,9 +46,14 @@ public abstract class Converter<T> {
      * @param c the type
      * @return the converter
      */
-    public static Converter forType(final Class<?> c) {
-        if (c != null && c.equals(Long.class)) {
-            return LongConverter.instance();
+    public static Converter<Long> forType(final Class<?> c) {
+        if (c != null) {
+            LOGGER.log(DEBUG, "Requesting converter for type: {0}", c.getSimpleName());
+            // FUTURE_WORK: Validate request is supported
+
+            if (c.equals(Long.class)) {
+                return LongConverter.instance();
+            }
         }
 
         return null;

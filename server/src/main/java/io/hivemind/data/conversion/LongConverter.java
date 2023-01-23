@@ -32,14 +32,14 @@ public class LongConverter extends Converter<Long> {
      *
      * @return new LongConverter
      */
-    protected static LongConverter instance() {
+    protected static Converter<Long> instance() {
         return new LongConverter();
     }
 
     @Override
     public byte[] convert(Long object) {
         if (object == null) {
-            return null;
+            return new byte[0];
         }
 
         byte[] result = new byte[Long.BYTES];

@@ -40,14 +40,11 @@ public class HiveManager {
      * free up some memory and keep the hive clean.
      */
     public void clearInertState() {
-        Runtime runtime = Runtime.getRuntime();
-        long current = getUsedMemory(runtime);
-        LOGGER.log(INFO, "Removing inert state, current amount of memory in use is: {0}mb", current);
+        LOGGER.log(INFO, "Removing inert state");
 
         dataProcessor.cleanOlderState();
-        runtime.gc();
 
-        LOGGER.log(INFO, "Removed inert state, freed up memory: {0}mb", (current - getUsedMemory(runtime)));
+        LOGGER.log(INFO, "Removed inert state");
     }
 
     /**
@@ -55,18 +52,10 @@ public class HiveManager {
      * memory in use.
      */
     public void clearAllState() {
-        Runtime runtime = Runtime.getRuntime();
-        long current = getUsedMemory(runtime);
-        LOGGER.log(INFO, "Removing all state, current amount of memory in use is: {0}mb", current);
+        LOGGER.log(INFO, "Removing all state");
 
         dataProcessor.clearAllState();
-        runtime.gc();
 
-        LOGGER.log(INFO, "Removed all state, freed up memory: {0}mb", (current - getUsedMemory(runtime)));
-    }
-
-    private long getUsedMemory(final Runtime runtime) {
-        int mb = 1024 * 1024;
-        return (runtime.totalMemory() - runtime.freeMemory()) / mb;
+        LOGGER.log(INFO, "Removed all state");
     }
 }

@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import static java.lang.System.Logger.Level.ERROR;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -74,7 +75,6 @@ public class SynchronizeTask implements Runnable {
                     os.write(essenceDataProvider.determineEssence());
                 }
                 os.flush();
-                os.close();
             }
             processResponse(connection);
 
@@ -84,21 +84,21 @@ public class SynchronizeTask implements Runnable {
         }
     }
 
-    private HttpURLConnection buildEssenceRequest() throws MalformedURLException, IOException {
+    private HttpURLConnection buildEssenceRequest() throws IOException {
         HttpURLConnection urlConnection = getBaseRequest();
         urlConnection.addRequestProperty(KEY_CONTENT_TYPE, ContentType.HIVE_ESSENCE.getValue());
 
         return urlConnection;
     }
 
-    private HttpURLConnection buildDataRequest() throws MalformedURLException, IOException {
+    private HttpURLConnection buildDataRequest() throws IOException {
         HttpURLConnection urlConnection = getBaseRequest();
         urlConnection.addRequestProperty(KEY_CONTENT_TYPE, ContentType.OTHER.getValue());
 
         return urlConnection;
     }
 
-    private HttpURLConnection getBaseRequest() throws MalformedURLException, IOException {
+    private HttpURLConnection getBaseRequest() throws IOException {
         URL url = new URL(config.getUri());
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestMethod(POST);
@@ -117,33 +117,7 @@ public class SynchronizeTask implements Runnable {
         }
 
         if (isSuccessful(response)) {
-            switch (response.getResponseCode()) {
-                case 204 ->
-                    LOGGER.info("Synchronization task succeeded, application is up to date");
-                case 200 -> {
-                    ContentType contentType = getContentType(response);
-                    if (ContentType.HIVE_ESSENCE == contentType) {
-                        LOGGER.info("Synchronization task succeeded, application received data request");
-
-                        byte[] respondingEssence = readData(response);
-                        if (respondingEssence != null && respondingEssence.length > 0) {
-                            dataToSend = new PreparedData(essenceDataProvider.getDataForEssence(respondingEssence));
-                        }
-                    } else if (ContentType.OTHER == contentType) {
-                        LOGGER.info("Synchronization task succeeded, application received data");
-
-                        essenceDataProvider.saveData(readData(response));
-                    }
-                }
-                case 409 -> {
-                    LOGGER.info("Synchronization task succeeded, application received priority request");
-                    essenceDataProvider.processPriorityEssence(readData(response));
-                }
-            }
-
-            if (isDataRequest) {
-                dataToSend.close();
-            }
+            readResponse(response);
         } else {
             LOGGER.error("""
                 Unexpected response code received from Hivemind, this points to 
@@ -179,6 +153,39 @@ public class SynchronizeTask implements Runnable {
     private boolean isSuccessful(final HttpURLConnection response) throws IOException {
         int code = response.getResponseCode();
         return code == 200 || code == 204 || code == 409;
+    }
+
+    private void readResponse(final HttpURLConnection response) throws IOException {
+        switch (response.getResponseCode()) {
+            case 204 ->
+                LOGGER.info("Synchronization task succeeded, application is up to date");
+            case 200 -> {
+                ContentType contentType = getContentType(response);
+                if (ContentType.HIVE_ESSENCE == contentType) {
+                    LOGGER.info("Synchronization task succeeded, application received data request");
+
+                    byte[] respondingEssence = readData(response);
+                    if (respondingEssence != null && respondingEssence.length > 0) {
+                        dataToSend = new PreparedData(essenceDataProvider.getDataForEssence(respondingEssence));
+                    }
+                } else if (ContentType.OTHER == contentType) {
+                    LOGGER.info("Synchronization task succeeded, application received data");
+
+                    essenceDataProvider.saveData(readData(response));
+                }
+            }
+            case 409 -> {
+                LOGGER.info("Synchronization task succeeded, application received priority request");
+                essenceDataProvider.processPriorityEssence(readData(response));
+            }
+            default -> {
+                LOGGER.error("Unexpected response code received from Hivemind, this points to inproper code since the status code has been deemed succesfull");
+            }
+        }
+
+        if (isDataRequest) {
+            dataToSend.close();
+        }
     }
 
     private byte[] readData(final HttpURLConnection response) throws IOException {

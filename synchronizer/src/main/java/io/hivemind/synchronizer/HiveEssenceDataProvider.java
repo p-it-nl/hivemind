@@ -61,7 +61,7 @@ public class HiveEssenceDataProvider implements EssenceDataProvider {
 
         byte[] data = new byte[0];
         try ( ByteArrayOutputStream baos = new ByteArrayOutputStream();  ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-            oos.writeObject(resources);
+            oos.writeObject(resources);//NOSONAR, in this case List is always ArrayList and there for serializable
             data = baos.toByteArray();
         } catch (IOException ex) {
             LOGGER.log(ERROR, "Failed to convert object to byte array", ex);

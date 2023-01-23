@@ -163,7 +163,7 @@ public class HiveConfig {
      *  ELSE
      *      IGNORE}
      */
-    private void setProperties(final Properties properties) throws IOException {
+    private void setProperties(final Properties properties) {
         setServerType(properties);
         setConsistencyModel(properties);
         setPort(properties);
