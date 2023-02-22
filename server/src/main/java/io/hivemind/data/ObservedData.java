@@ -15,6 +15,7 @@
  */
 package io.hivemind.data;
 
+import io.hivemind.constant.ContentType;
 import java.lang.ref.Cleaner;
 import java.time.Instant;
 
@@ -37,10 +38,12 @@ public class ObservedData implements Data {
     static class State implements Runnable {
 
         private byte[] data;
+        private ContentType contentType;
         private final Instant timestamp;
 
-        State(final byte[] data) {
+        State(final byte[] data, final ContentType contentType) {
             this.data = data;
+            this.contentType = contentType;
             this.timestamp = Instant.now();
         }
 
@@ -51,7 +54,11 @@ public class ObservedData implements Data {
     }
 
     public ObservedData(final byte[] data) {
-        this.state = new State(data);
+        this(data, null);
+    }
+
+    public ObservedData(final byte[] data, final ContentType contentType) {
+        this.state = new State(data, contentType);
         this.cleanable = cleaner.register(this, state);
     }
 
@@ -68,6 +75,11 @@ public class ObservedData implements Data {
     @Override
     public Instant getSince() {
         return this.state.timestamp;
+    }
+
+    @Override
+    public ContentType getContentType() {
+        return this.state.contentType;
     }
 
     public void close() {

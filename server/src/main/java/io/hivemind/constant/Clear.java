@@ -17,7 +17,7 @@ package io.hivemind.constant;
 
 import io.hivemind.exception.HiveCeption;
 import io.hivemind.exception.HiveRequestException;
-import io.hivemind.manager.HiveManager;
+import io.hivemind.service.HiveManagerService;
 
 /**
  * Types of clearing action
@@ -29,13 +29,13 @@ public enum Clear {
     /**
      * Will result in clearing all state
      *
-     * @see HiveManager
+     * @see HiveManagerService
      */
     ALL,
     /**
      * Will result in clearing inert state
      *
-     * @see HiveManager
+     * @see HiveManagerService
      */
     INERT;
 

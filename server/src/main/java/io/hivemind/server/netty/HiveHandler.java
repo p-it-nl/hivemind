@@ -25,7 +25,7 @@ import io.hivemind.data.PriorityRequest;
 import io.hivemind.exception.HiveCeption;
 import io.hivemind.exception.HiveRequestException;
 import io.hivemind.exception.InvalidEssenceException;
-import io.hivemind.manager.HiveManager;
+import io.hivemind.service.HiveManagerService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -178,7 +178,7 @@ public class HiveHandler extends SimpleChannelInboundHandler<Object> {
 
             FullHttpResponse response;
             try {
-                HiveManager hiveManager = new HiveManager();
+                HiveManagerService hiveManager = new HiveManagerService();
                 final byte[] bytes = readData();
                 if (bytes.length > 0) {
                     switch (Clear.enumFor(new String(bytes))) {

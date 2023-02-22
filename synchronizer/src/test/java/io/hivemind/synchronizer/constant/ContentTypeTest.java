@@ -28,6 +28,7 @@ public class ContentTypeTest {
 
     private static final String VALUE_EMPTY = "";
     private static final String VALUE_APPLICATION_ZIP = "application/zip";
+    private static final String VALUE_JSON = "json";
     private static final String VALUE_APPLICATION_JSON = "application/json";
     private static final String VALUE_MOCK = "mock";
     private static final String VALUE_APPLICATION_HIVE_ESSENCE = "application/hive-essence";
@@ -57,16 +58,6 @@ public class ContentTypeTest {
     @Test
     public void contentTypeFromApplicationZip() {
         String value = VALUE_APPLICATION_ZIP;
-        ContentType expected = ContentType.OTHER;
-
-        ContentType result = ContentType.enumFor(value);
-
-        assertEquals(expected, result);
-    }
-
-    @Test
-    public void contentTypeFromApplicationJson() {
-        String value = VALUE_APPLICATION_JSON;
         ContentType expected = ContentType.OTHER;
 
         ContentType result = ContentType.enumFor(value);
@@ -108,6 +99,26 @@ public class ContentTypeTest {
     public void contentTypeFromHiveEssenceWithoutHyphen() {
         String value = VALUE_HIVE_ESSENCE_NO_HYPHEN;
         ContentType expected = ContentType.OTHER;
+
+        ContentType result = ContentType.enumFor(value);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void contentTypeFromApplicationJson() {
+        String value = VALUE_APPLICATION_JSON;
+        ContentType expected = ContentType.JSON;
+
+        ContentType result = ContentType.enumFor(value);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void contentTypeFromJson() {
+        String value = VALUE_JSON;
+        ContentType expected = ContentType.JSON;
 
         ContentType result = ContentType.enumFor(value);
 

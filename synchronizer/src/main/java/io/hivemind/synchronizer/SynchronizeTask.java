@@ -131,19 +131,6 @@ public class SynchronizeTask implements Runnable {
         }
     }
 
-    private ContentType getContentType(final HttpResponse<byte[]> response) {
-        List<String> contentTypeValues = response.headers().allValues(KEY_CONTENT_TYPE);
-        if (!contentTypeValues.isEmpty()) {
-            return ContentType.enumFor(contentTypeValues.get(contentTypeValues.size() - 1));
-        } else {
-            LOGGER.log(WARNING, """
-                Response from Hivemind received that did not have a content-type 
-                set, this is an issue worth looking into""");
-        }
-
-        return null;
-    }
-
     private boolean isSuccessful(final HttpResponse<byte[]> response) {
         int code = response.statusCode();
         return code == 200 || code == 204 || code == 409;
@@ -180,5 +167,18 @@ public class SynchronizeTask implements Runnable {
         if (isDataRequest) {
             dataToSend.close();
         }
+    }
+
+    private ContentType getContentType(final HttpResponse<byte[]> response) {
+        List<String> contentTypeValues = response.headers().allValues(KEY_CONTENT_TYPE);
+        if (!contentTypeValues.isEmpty()) {
+            return ContentType.enumFor(contentTypeValues.get(contentTypeValues.size() - 1));
+        } else {
+            LOGGER.log(WARNING, """
+                Response from Hivemind received that did not have a content-type 
+                set, this is an issue worth looking into""");
+        }
+
+        return null;
     }
 }

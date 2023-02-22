@@ -79,9 +79,9 @@ public class DataProcessor {
      * difference.
      * </li>
      * <li>
-     * OTHER; When receiving other data types it indicates receiving data that
-     * is destined for one or more synchronizers. This data is prepared to be
-     * received by the synchronizers for the next incoming request from the
+     * OTHER;JSON; When receiving other data types it indicates receiving data
+     * that is destined for one or more synchronizers. This data is prepared to
+     * be received by the synchronizers for the next incoming request from the
      * synchronizer and will be cleared after.
      * </li>
      * </ul>
@@ -106,9 +106,9 @@ public class DataProcessor {
                     case HIVE_ESSENCE -> {
                         processHiveEssence(data, traceparent);
                     }
-                    case OTHER -> {
+                    case OTHER,JSON -> {
                         if (data != null && data.length != 0) {
-                            processDataReceived(data, traceparent);
+                            processDataReceived(data, contentType, traceparent);
                         } else {
                             LOGGER.log(WARNING, "Received data request from {0} but without any data", traceparent);
                         }
@@ -242,11 +242,11 @@ public class DataProcessor {
         }
     }
 
-    private void processDataReceived(final byte[] data, final String traceparent) {
+    private void processDataReceived(final byte[] data, final ContentType contentType, final String traceparent) {
         if (dataRequest.containsKey(traceparent)) {
             Map<String, ObservedData> receiverRequests = dataRequest.get(traceparent);
             if (!receiverRequests.isEmpty()) {
-                PreparedData dataForReceiver = new PreparedData(data);
+                PreparedData dataForReceiver = new PreparedData(data, contentType);
                 for (Map.Entry<String, ObservedData> receiverRequest : receiverRequests.entrySet()) {
                     preparedData.put(receiverRequest.getKey(), dataForReceiver);
                 }

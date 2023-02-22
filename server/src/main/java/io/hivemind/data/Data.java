@@ -15,6 +15,7 @@
  */
 package io.hivemind.data;
 
+import io.hivemind.constant.ContentType;
 import java.time.Instant;
 
 /**
@@ -39,4 +40,11 @@ public interface Data {
      * @return the instant from when this data exists
      */
     public Instant getSince();
+
+    /**
+     * @return the content-type or null
+     * @see ContentType
+     */
+    public ContentType getContentType();
+
 }

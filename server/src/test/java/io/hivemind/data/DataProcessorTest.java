@@ -439,4 +439,30 @@ public class DataProcessorTest {
         assertEquals(PreparedData.class.getSimpleName(), fourthResultA.getClass().getSimpleName());
         assertTrue(Arrays.compare(dataB, fourthResultA.getData()) == 0);
     }
+
+    @Test
+    public void processDataReceivingDataFromAAfterBBehindReceivingJson() throws InvalidEssenceException {
+        byte[] essenceA = DATA_LONG;
+        String traceparentA = TRACEPARENT_A;
+        String traceparentB = TRACEPARENT_B;
+        byte[] dataA = DATA_FROM_A;
+        ContentType expectedType = ContentType.JSON;
+
+        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
+        PreparedData thirdResultA = classUnderTest.processData(dataA, ContentType.JSON, traceparentA);
+        PreparedData thirdResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
+        PreparedData fourthResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
+
+        TestUtil.assertAllNull(firstResultA, firstResultB, secondResultB, thirdResultA, fourthResultA);
+        TestUtil.assertAllNotNull(secondResultA, thirdResultB);
+
+        assertEquals(DataRequest.class.getSimpleName(), secondResultA.getClass().getSimpleName());
+        assertTrue(Arrays.compare(essenceA, secondResultA.getData()) == 0);
+        assertEquals(PreparedData.class.getSimpleName(), thirdResultB.getClass().getSimpleName());
+        assertTrue(Arrays.compare(dataA, thirdResultB.getData()) == 0);
+        assertEquals(expectedType, thirdResultB.getContentType());
+    }
 }

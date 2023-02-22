@@ -15,6 +15,8 @@
  */
 package io.hivemind.data;
 
+import io.hivemind.constant.ContentType;
+
 /**
  * Data that has been prepared to be returned to or send by a synchronizer
  *
@@ -24,5 +26,9 @@ public class PreparedData extends ObservedData {
 
     public PreparedData(final byte[] essence) {
         super(essence);
+    }
+
+    public PreparedData(final byte[] essence, final ContentType contentType) {
+        super(essence, contentType);
     }
 }

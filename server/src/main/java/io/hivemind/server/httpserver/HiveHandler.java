@@ -90,7 +90,7 @@ public class HiveHandler implements HttpHandler {
                     helper.setContentType(ContentType.HIVE_ESSENCE, exchange);
                     exchange.sendResponseHeaders(409, responseData.length);
                 } else {
-                    helper.setContentType(ContentType.OTHER, exchange);
+                    helper.setContentType(preparedData.getContentType(), exchange);
                     exchange.sendResponseHeaders(200, responseData.length);
                 }
 

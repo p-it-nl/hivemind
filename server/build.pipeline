@@ -5,13 +5,13 @@ pipeline {
     }
 
     stages {
-        stage('Clone hivemind') {
+        stage('Clone Hivemind') {
             steps {
                 git url: 'git@{url}:hivemind.git'
             }
 		}
         
-		stage('Build hivemind') {
+		stage('Build and test Hivemind') {
 		    steps {
 			   sh 'cd server && mvn clean install'
 		    }
@@ -23,20 +23,20 @@ pipeline {
 		    }
 		}
 		
-		stage('Copy to hivemind server') {
+		stage('Copy to Hivemind server') {
 		    steps {
 		        sh 'rsync -avz -e "ssh" server/restart.sh {user}@{url}:/home/hivemind/hivemind'
 		        sh 'rsync -avz -e "ssh" server/target/* {user}@{url}:/home/hivemind/hivemind'
 		    }
 		}
 
-		stage('Run on hivemind server') {
+		stage('Run on Hivemind server') {
 		    steps {
 			    sh 'ssh {user}@{url} "echo {password} | sudo -S nohup sh /home/hivemind/hivemind/restart.sh < /dev/null >> logfile.log 2>&1 &"'
 		    }
 		}
 		
-		stage('Test hivemind server') {
+		stage('Test Hivemind server') {
 		    steps {
 			    sh 'cd server/tests && robot hivemind-tests.robot'
 		    }

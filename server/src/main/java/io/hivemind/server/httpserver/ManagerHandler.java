@@ -19,7 +19,7 @@ import com.sun.net.httpserver.HttpExchange;//NOSONAR, com.sun is fine
 import com.sun.net.httpserver.HttpHandler;//NOSONAR, com.sun is fine
 import io.hivemind.constant.Clear;
 import io.hivemind.exception.HiveRequestException;
-import io.hivemind.manager.HiveManager;
+import io.hivemind.service.HiveManagerService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,7 +41,7 @@ public class ManagerHandler implements HttpHandler {
         LOGGER.log(INFO, "Manager request received, processing...");
 
         if (exchange != null) {
-            HiveManager hiveManager = new HiveManager();
+            HiveManagerService hiveManager = new HiveManagerService();
             try ( InputStream is = exchange.getRequestBody()) {
                 final byte[] bytes = is.readAllBytes();
                 if (bytes != null && bytes.length > 0) {

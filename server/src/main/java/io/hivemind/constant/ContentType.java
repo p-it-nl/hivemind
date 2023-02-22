@@ -27,6 +27,7 @@ package io.hivemind.constant;
 public enum ContentType {
 
     HIVE_ESSENCE("application/hive-essence"),
+    JSON("application/json"),
     OTHER("application/ser");
 
     private final String value;
@@ -47,6 +48,9 @@ public enum ContentType {
      * Determine the content type based on the value. This is the preferred way
      * to create this enum.
      *
+     * FUTURE_WORK: The IF method chaining is not future proof, make something
+     * better and test is
+     *
      * @param value the value to determine the content-type for
      * @return the content-type (either HIVE_ESSENCE or OTHER)
      */
@@ -54,9 +58,13 @@ public enum ContentType {
         if (value != null && !value.isEmpty()) {
             String lowerValue = value.toLowerCase();
             String hiveEssence = HIVE_ESSENCE.getValue();
+            String json = JSON.getValue();
             String secondPart = hiveEssence.split(SLASH)[1];
+            String secondPartJson = json.split(SLASH)[1];
             if (hiveEssence.equals(lowerValue) || secondPart.equals(lowerValue)) {
                 return HIVE_ESSENCE;
+            } else if (json.equals(lowerValue) || secondPartJson.equals(lowerValue)) {
+                return JSON;
             }
         }
 
