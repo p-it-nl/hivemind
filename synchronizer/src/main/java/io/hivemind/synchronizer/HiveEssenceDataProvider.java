@@ -91,7 +91,6 @@ public class HiveEssenceDataProvider implements EssenceDataProvider {
 
     @Override
     public void saveData(final byte[] data, final ContentType contentType) {
-        System.out.println("content-type: " + contentType);
         resourceProvider.saveData(data);
     }
 }

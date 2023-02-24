@@ -187,9 +187,6 @@ public class SynchronizeTask implements Runnable {
 
     private ContentType getContentType(final HttpResponse<byte[]> response) {
         List<String> contentTypeValues = response.headers().allValues(KEY_CONTENT_TYPE);
-        for (String c : contentTypeValues) {
-            System.out.println(c);
-        }
         if (!contentTypeValues.isEmpty()) {
             return ContentType.enumFor(contentTypeValues.get(contentTypeValues.size() - 1));
         } else {

@@ -32,12 +32,20 @@ public class HttpserverHelper extends RequestHelper<HttpExchange> {
         return determineTraceparent(exchange.getRequestHeaders().get(KEY_TRACEPARENT));
     }
 
+    // FUTURE_WORK: Add unit tests this is to similair to method below
     @Override
     public boolean isHiveEssenceRequest(final HttpExchange exchange) {
         List<String> contentTypes = exchange.getRequestHeaders().get(KEY_CONTENT_TYPE);
         if (contentTypes != null && !contentTypes.isEmpty()) {
             for (String contentType : contentTypes) {
-                if (ContentType.HIVE_ESSENCE == ContentType.enumFor(contentType)) {
+                if (contentType.contains(COMMA)) {
+                    String[] contentTypesWithin = contentType.split(COMMA);
+                    for (String contentTypeWithin : contentTypesWithin) {
+                        if (ContentType.HIVE_ESSENCE == ContentType.enumFor(contentTypeWithin)) {
+                            return true;
+                        }
+                    }
+                } else if (ContentType.HIVE_ESSENCE == ContentType.enumFor(contentType)) {
                     return true;
                 }
             }
@@ -46,13 +54,21 @@ public class HttpserverHelper extends RequestHelper<HttpExchange> {
         return false;
     }
 
+    // FUTURE_WORK: Add unit tests this is to similair to method above
     @Override
     public String determineRequestedType(final HttpExchange exchange) {
         List<String> contentTypes = exchange.getRequestHeaders().get(KEY_CONTENT_TYPE);
         if (contentTypes != null && !contentTypes.isEmpty()) {
             for (String contentType : contentTypes) {
-                if (ContentType.HIVE_ESSENCE != ContentType.enumFor(contentType)) {
-                    return contentType;
+                if (contentType.contains(COMMA)) {
+                    String[] contentTypesWithin = contentType.split(COMMA);
+                    for (String contentTypeWithin : contentTypesWithin) {
+                        if (ContentType.HIVE_ESSENCE != ContentType.enumFor(contentTypeWithin)) {
+                            return contentTypeWithin.trim();
+                        }
+                    }
+                } else if (ContentType.HIVE_ESSENCE != ContentType.enumFor(contentType)) {
+                    return contentType.trim();
                 }
             }
         }

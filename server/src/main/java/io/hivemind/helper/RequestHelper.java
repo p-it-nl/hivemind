@@ -31,6 +31,7 @@ public abstract class RequestHelper<R> {
 
     public static final String KEY_TRACEPARENT = "traceparent";
     public static final String KEY_CONTENT_TYPE = "content-type";
+    public static final String COMMA = ",";
     private static final String CONTENT_TYPE_SEPARATOR = ", ";
 
     /**

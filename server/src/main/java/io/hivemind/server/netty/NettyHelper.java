@@ -17,7 +17,6 @@ package io.hivemind.server.netty;
 
 import io.hivemind.constant.ContentType;
 import io.hivemind.helper.RequestHelper;
-import static io.hivemind.helper.RequestHelper.KEY_CONTENT_TYPE;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -57,13 +56,21 @@ public class NettyHelper extends RequestHelper<HttpMessage> {
         return false;
     }
 
+    // FUTURE_WORK: Add unit tests
     @Override
     public String determineRequestedType(final HttpMessage request) {
         List<String> contentTypes = request.headers().getAll(KEY_CONTENT_TYPE);
         if (contentTypes != null && !contentTypes.isEmpty()) {
             for (String contentType : contentTypes) {
-                if (ContentType.HIVE_ESSENCE != ContentType.enumFor(contentType)) {
-                    return contentType;
+                if (contentType.contains(COMMA)) {
+                    String[] contentTypesWithin = contentType.split(COMMA);
+                    for (String contentTypeWithin : contentTypesWithin) {
+                        if (ContentType.HIVE_ESSENCE != ContentType.enumFor(contentTypeWithin)) {
+                            return contentTypeWithin.trim();
+                        }
+                    }
+                } else if (ContentType.HIVE_ESSENCE != ContentType.enumFor(contentType)) {
+                    return contentType.trim();
                 }
             }
         }
