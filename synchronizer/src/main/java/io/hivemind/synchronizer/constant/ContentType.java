@@ -16,26 +16,30 @@
 package io.hivemind.synchronizer.constant;
 
 /**
- * Identification for content types the application differs in. Currently only
- * interested in it being hive-essence or not
+ * Identification for content types the application differs in. The supported
+ * content type is per synchronizer, currently supporting:
+ * <ul>
+ * <li>- Hive essence</li>
+ * <li>- Serialized</li>
+ * <li>- JSON</li>
+ * </ul>
  *
  * @author Patrick-4488
  */
 public enum ContentType {
 
     HIVE_ESSENCE("application/hive-essence"),
-    JSON("application/json"),
-    OTHER("application/ser");
+    SERIALIZED("application/ser"),
+    JSON("application/json");
 
     private final String value;
-    private static final String SLASH = "/";
 
     ContentType(final String value) {
         this.value = value;
     }
 
     /**
-     * @return Get the content-type
+     * @return Get the content type value
      */
     public String getValue() {
         return value;
@@ -45,26 +49,20 @@ public enum ContentType {
      * Determine the content type based on the value. This is the preferred way
      * to create this enum.
      *
-     * FUTURE_WORK: The IF method chaining is not future proof, make something
-     * better and test is
-     *
-     * @param value the value to determine the content-type for
-     * @return the content-type (either HIVE_ESSENCE or OTHER)
+     * @param value the value to determine the content type for
+     * @return the content type (either HIVE_ESSENCE or OTHER)
      */
     public static ContentType enumFor(final String value) {
         if (value != null && !value.isEmpty()) {
             String lowerValue = value.toLowerCase();
-            String hiveEssence = HIVE_ESSENCE.getValue();
-            String json = JSON.getValue();
-            String secondPart = hiveEssence.split(SLASH)[1];
-            String secondPartJson = json.split(SLASH)[1];
-            if (hiveEssence.equals(lowerValue) || secondPart.equals(lowerValue)) {
-                return HIVE_ESSENCE;
-            } else if (json.equals(lowerValue) || secondPartJson.equals(lowerValue)) {
-                return JSON;
+
+            for (ContentType type : ContentType.values()) {
+                if (type.getValue().contains(lowerValue)) {
+                    return type;
+                }
             }
         }
 
-        return OTHER;
+        return SERIALIZED;
     }
 }

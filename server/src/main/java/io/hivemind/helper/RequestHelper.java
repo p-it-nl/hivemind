@@ -16,6 +16,7 @@
 package io.hivemind.helper;
 
 import io.hivemind.constant.ContentType;
+import io.hivemind.data.PreparedData;
 import io.hivemind.tracecontext.TraceparentGenerator;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public abstract class RequestHelper<R> {
 
     public static final String KEY_TRACEPARENT = "traceparent";
     public static final String KEY_CONTENT_TYPE = "content-type";
+    private static final String CONTENT_TYPE_SEPARATOR = ", ";
 
     /**
      * Determine the traceparent for the request. This will return a new
@@ -42,12 +44,21 @@ public abstract class RequestHelper<R> {
     public abstract String determineTraceparent(final R request);
 
     /**
-     * Determine the content-type of this request.
+     * Determine if the request is a hive essence request
      *
      * @param request the 'request' to determine for
-     * @return the content-type for this request
+     * @return whether this is a hive essence request
      */
-    public abstract ContentType determineContentType(final R request);
+    public abstract boolean isHiveEssenceRequest(final R request);
+
+    /**
+     * Determine if the synchronizer that send this request is requiring data to
+     * be send in a specific format.
+     *
+     * @param request the 'request' to determine for
+     * @return the content type (as string) for this data or null
+     */
+    public abstract String determineRequestedType(final R request);
 
     /**
      * Set the traceparent for the response
@@ -58,12 +69,32 @@ public abstract class RequestHelper<R> {
     public abstract void setTraceparent(final String traceparent, final R response);
 
     /**
-     * Set the content-type for the reponse
+     * Set the content type for the response
      *
-     * @param contentType the content-type to set
+     * @param requestedType the content type for the request to set
      * @param response the 'response' to set the content type for
      */
-    public abstract void setContentType(final ContentType contentType, final R response);
+    public abstract void setContentType(final String requestedType, final R response);
+
+    /**
+     * Determine the content type to set for a data request. This is either only
+     * the content type: HIVE_ESSENCE or is: HIVE_ESSENCE, requestedType
+     *
+     * @param dataRequest the DataRequest to return
+     * @return the content type header for this request
+     */
+    public String determineDataRequestContentType(final PreparedData dataRequest) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ContentType.HIVE_ESSENCE.getValue());
+
+        String requestedType = dataRequest.getRequestedType();
+        if (requestedType != null) {
+            sb.append(CONTENT_TYPE_SEPARATOR);
+            sb.append(requestedType);
+        }
+
+        return sb.toString();
+    }
 
     protected String determineTraceparent(final List<String> values) {
         String traceparent;

@@ -15,7 +15,6 @@
  */
 package io.hivemind.data;
 
-import io.hivemind.constant.ContentType;
 import io.hivemind.data.comparison.ComparisonResult;
 import io.hivemind.data.comparison.EssenceComparator;
 import io.hivemind.data.comparison.EssenceValidator;
@@ -73,9 +72,9 @@ public class DataProcessor {
      * <ul>
      * <li>
      * HIVE_ESSENCE; Will compare the given hive essence with the latest
-     * received if this is available. When the received essence is ahead, it
-     * will be stored for other receivers. If it is behind, it will request data
-     * to be prepared from the synchronizer that has the latest based on the
+     * received if this is available.When the received essence is ahead, it will
+     * be stored for other receivers. If it is behind, it will request data to
+     * be prepared from the synchronizer that has the latest based on the
      * difference.
      * </li>
      * <li>
@@ -87,37 +86,28 @@ public class DataProcessor {
      * </ul>
      *
      * @param data the data (hive essence / data to provide)
-     * @param contentType the content type (@see ContentType)
+     * @param isHiveEssence if this request is a hive essence request
+     * @param requestedType the (specific) content type that a synchronizer
+     * requests data in (this value is only set when a synchronizer diverts from
+     * default)
      * @param traceparent the traceparent
      * @return the PreparedData or DataRequest or null
      * @throws io.hivemind.exception.InvalidEssenceException when invalid
      * essence has been received
      * @see EssenceValidator
      */
-    public synchronized PreparedData processData(final byte[] data, final ContentType contentType, final String traceparent) throws InvalidEssenceException {
+    public synchronized PreparedData processData(final byte[] data, final boolean isHiveEssence, final String requestedType, final String traceparent) throws InvalidEssenceException {
         LOGGER.log(INFO, "Processing data received from {0} having {1} bytes of "
                 + "content", traceparent, (data != null ? data.length : "0"));
 
         if (!priorityRequest.containsKey(traceparent)) {
-            if (contentType == null) {
-                LOGGER.log(WARNING, "No content-type received", contentType);
+            if (isHiveEssence) {
+                processHiveEssence(data, requestedType, traceparent);
+            } else if (data != null && data.length != 0) {
+                processDataReceived(data, requestedType, traceparent);
             } else {
-                switch (contentType) {
-                    case HIVE_ESSENCE -> {
-                        processHiveEssence(data, traceparent);
-                    }
-                    case OTHER,JSON -> {
-                        if (data != null && data.length != 0) {
-                            processDataReceived(data, contentType, traceparent);
-                        } else {
-                            LOGGER.log(WARNING, "Received data request from {0} but without any data", traceparent);
-                        }
-                    }
-                    default ->
-                        LOGGER.log(WARNING, "Unexpected content-type received, being: {0}", contentType);
-                }
+                LOGGER.log(WARNING, "Received data request from {0} but without any data", traceparent);
             }
-
             storeData(data, traceparent);
         }
         PreparedData dataResult = determineDataResult(priorityRequest.containsKey(traceparent), traceparent);
@@ -158,7 +148,7 @@ public class DataProcessor {
         priorityRequest.clear();
     }
 
-    private void processHiveEssence(final byte[] data, final String traceparent) throws InvalidEssenceException {
+    private void processHiveEssence(final byte[] data, final String requestedType, final String traceparent) throws InvalidEssenceException {
         new EssenceValidator().validateEssence(data);
 
         if (latestObserved != null) {
@@ -171,7 +161,7 @@ public class DataProcessor {
             if (Outcome.BEHIND == outcome) {
                 latestObserved = new SimpleEntry<>(traceparent, observedData);
             } else if (Outcome.AHEAD == outcome) {
-                processEssenceAhead(result, comparator, latestObservedData, observedData, traceparent);
+                processEssenceAhead(result, comparator, latestObservedData, observedData, requestedType, traceparent);
             }
         }
     }
@@ -204,7 +194,13 @@ public class DataProcessor {
         return false;
     }
 
-    private void processEssenceAhead(final ComparisonResult result, final EssenceComparator comparator, final ObservedData latestObservedData, final ObservedData observedData, final String traceparent) {
+    private void processEssenceAhead(
+            final ComparisonResult result,
+            final EssenceComparator comparator,
+            final ObservedData latestObservedData,
+            final ObservedData observedData,
+            final String requestedType,
+            final String traceparent) {
         boolean changeIsUpdate = isUpdate(comparator, latestObservedData, traceparent);
         boolean hasDataToReceive = preparedData.containsKey(traceparent);
         if (changeIsUpdate) {
@@ -215,7 +211,7 @@ public class DataProcessor {
                 }
             }
         } else if (!hasDataToReceive) {
-            storeDataRequest(new ObservedData(result.getDifference()), traceparent);
+            storeDataRequest(new ObservedData(result.getDifference(), requestedType), traceparent);
         }
     }
 
@@ -242,11 +238,11 @@ public class DataProcessor {
         }
     }
 
-    private void processDataReceived(final byte[] data, final ContentType contentType, final String traceparent) {
+    private void processDataReceived(final byte[] data, final String requestedType, final String traceparent) {
         if (dataRequest.containsKey(traceparent)) {
             Map<String, ObservedData> receiverRequests = dataRequest.get(traceparent);
             if (!receiverRequests.isEmpty()) {
-                PreparedData dataForReceiver = new PreparedData(data, contentType);
+                PreparedData dataForReceiver = new PreparedData(data, requestedType);
                 for (Map.Entry<String, ObservedData> receiverRequest : receiverRequests.entrySet()) {
                     preparedData.put(receiverRequest.getKey(), dataForReceiver);
                 }
@@ -296,7 +292,7 @@ public class DataProcessor {
             } else if (hasRequestForData) {
                 Map<String, ObservedData> receiverRequest = dataRequest.get(traceparent);
                 ObservedData receiverData = receiverRequest.values().iterator().next();
-                dataResult = new DataRequest(receiverData.getData());
+                dataResult = new DataRequest(receiverData.getData(), receiverData.getRequestedType());
             } else if (hasDataToReceive) {
                 dataResult = preparedData.get(traceparent);
                 preparedData.remove(traceparent);

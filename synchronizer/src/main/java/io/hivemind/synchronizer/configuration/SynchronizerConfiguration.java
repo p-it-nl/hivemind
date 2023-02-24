@@ -16,6 +16,7 @@
 package io.hivemind.synchronizer.configuration;
 
 import io.hivemind.synchronizer.constant.ConsistencyModel;
+import io.hivemind.synchronizer.constant.ContentType;
 import io.hivemind.synchronizer.exception.HiveCeption;
 import io.hivemind.synchronizer.exception.NotSupportedException;
 
@@ -28,6 +29,7 @@ public final class SynchronizerConfiguration {
 
     private int periodBetweenRequests;
     private ConsistencyModel consistencyModel;
+    private ContentType contentType;
 
     private final String uri;
 
@@ -61,6 +63,30 @@ public final class SynchronizerConfiguration {
      */
     public void setPeriodBetweenRequests(final int periodBetweenRequests) {
         this.periodBetweenRequests = periodBetweenRequests;
+    }
+
+    /**
+     * @return get the content type, when none is set will use default
+     */
+    public ContentType getContentType() {
+        return contentType;
+    }
+
+    /**
+     * Change the content type, this will inform the server to communicate to
+     * other synchronizers that this synchronizer wants to receive data in this
+     * specific format.
+     *
+     * @param contentType the content type to use (if none is set, uses default)
+     * @throws io.hivemind.synchronizer.exception.NotSupportedException when
+     * content type is set to hive essence
+     */
+    public void setContentType(final ContentType contentType) throws NotSupportedException {
+        if (ContentType.HIVE_ESSENCE == contentType) {
+            throw new NotSupportedException(HiveCeption.CANNOT_BE_HIVE_ESSENCE);
+        }
+
+        this.contentType = contentType;
     }
 
     /**

@@ -15,7 +15,6 @@
  */
 package io.hivemind.data;
 
-import io.hivemind.constant.ContentType;
 import io.hivemind.exception.InvalidEssenceException;
 import io.hivemind.test.util.TestUtil;
 import java.util.Arrays;
@@ -54,6 +53,8 @@ public class DataProcessorTest {
     private static final String TRACEPARENT_A = "1a";
     private static final String TRACEPARENT_B = "2b";
     private static final String TRACEPARENT_C = "3c";
+    private static final String SERIALIZED = "application/ser";
+    private static final String JSON = "application/json";
 
     @BeforeAll
     public static void setup() {
@@ -69,9 +70,8 @@ public class DataProcessorTest {
     public void processDataWithoutAnyValues() throws InvalidEssenceException {
         byte[] data = null;
         String traceparent = null;
-        ContentType contentType = null;
 
-        PreparedData preparedData = classUnderTest.processData(data, contentType, traceparent);
+        PreparedData preparedData = classUnderTest.processData(data, true, null, traceparent);
 
         assertNull(preparedData);
     }
@@ -80,9 +80,8 @@ public class DataProcessorTest {
     public void processDataWithoutDataButHavingContentTypeAndTraceparent() throws InvalidEssenceException {
         byte[] data = null;
         String traceparent = TRACEPARENT_A;
-        ContentType contentType = ContentType.HIVE_ESSENCE;
 
-        PreparedData preparedData = classUnderTest.processData(data, contentType, traceparent);
+        PreparedData preparedData = classUnderTest.processData(data, true, null, traceparent);
 
         assertNull(preparedData);
     }
@@ -91,9 +90,8 @@ public class DataProcessorTest {
     public void processDataWithEmptyDataButHavingContentTypeAndTraceparent() throws InvalidEssenceException {
         byte[] data = new byte[0];
         String traceparent = TRACEPARENT_A;
-        ContentType contentType = ContentType.HIVE_ESSENCE;
 
-        PreparedData preparedData = classUnderTest.processData(data, contentType, traceparent);
+        PreparedData preparedData = classUnderTest.processData(data, true, null, traceparent);
 
         assertNull(preparedData);
     }
@@ -102,9 +100,8 @@ public class DataProcessorTest {
     public void processDataWithDataButNoContentTypeAndTraceparent() throws InvalidEssenceException {
         byte[] data = DATA_SHORT;
         String traceparent = null;
-        ContentType contentType = null;
 
-        PreparedData preparedData = classUnderTest.processData(data, contentType, traceparent);
+        PreparedData preparedData = classUnderTest.processData(data, true, null, traceparent);
 
         assertNull(preparedData);
     }
@@ -117,11 +114,11 @@ public class DataProcessorTest {
         byte[] essenceB = null;
         String traceparentB = TRACEPARENT_B;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData thirdResultA = classUnderTest.processData(dataA, ContentType.OTHER, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData thirdResultA = classUnderTest.processData(dataA, false, SERIALIZED, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, thirdResultA);
         TestUtil.assertAllNotNull(secondResultA, secondResultB);
@@ -140,12 +137,12 @@ public class DataProcessorTest {
         byte[] essenceB = DATA_SHORT;
         String traceparentB = TRACEPARENT_B;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData thirdResultA = classUnderTest.processData(dataA, ContentType.OTHER, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData thirdResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData thirdResultA = classUnderTest.processData(dataA, false, SERIALIZED, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData thirdResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, thirdResultA, thirdResultB);
         TestUtil.assertAllNotNull(secondResultA, secondResultB);
@@ -163,10 +160,10 @@ public class DataProcessorTest {
         byte[] essenceB = DATA_SHORT;
         String traceparentB = TRACEPARENT_B;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceA, true, null, traceparentB);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, secondResultB);
         TestUtil.assertAllNotNull(secondResultA);
@@ -184,14 +181,14 @@ public class DataProcessorTest {
         byte[] dataB = DATA_FROM_B_SHORT_UPDATE;
         String traceparentB = TRACEPARENT_B;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData thirdResultA = classUnderTest.processData(essenceAAfterPriority, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData thirdResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData fourthResultB = classUnderTest.processData(dataB, ContentType.OTHER, traceparentB);
-        PreparedData fourthResultA = classUnderTest.processData(essenceAAfterPriority, ContentType.HIVE_ESSENCE, traceparentA);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceA, true, null, traceparentB);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData thirdResultA = classUnderTest.processData(essenceAAfterPriority, true, null, traceparentA);
+        PreparedData thirdResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData fourthResultB = classUnderTest.processData(dataB, false, SERIALIZED, traceparentB);
+        PreparedData fourthResultA = classUnderTest.processData(essenceAAfterPriority, true, null, traceparentA);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, secondResultB, thirdResultA, fourthResultB);
         TestUtil.assertAllNotNull(secondResultA, thirdResultB, fourthResultA);
@@ -212,12 +209,12 @@ public class DataProcessorTest {
         byte[] dataB = DATA_FROM_B_LONG_UPDATE;
         String traceparentB = TRACEPARENT_B;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData thirdResultB = classUnderTest.processData(dataB, ContentType.OTHER, traceparentB);
-        PreparedData thirdResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData thirdResultB = classUnderTest.processData(dataB, false, SERIALIZED, traceparentB);
+        PreparedData thirdResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, secondResultA, thirdResultB);
         TestUtil.assertAllNotNull(secondResultB, thirdResultA);
@@ -238,13 +235,13 @@ public class DataProcessorTest {
         byte[] essenceC = null;
         String traceparentC = TRACEPARENT_C;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData firstResultC = classUnderTest.processData(essenceC, ContentType.HIVE_ESSENCE, traceparentC);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData thirdResultA = classUnderTest.processData(dataA, ContentType.OTHER, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultC = classUnderTest.processData(essenceC, ContentType.HIVE_ESSENCE, traceparentC);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData firstResultC = classUnderTest.processData(essenceC, true, null, traceparentC);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData thirdResultA = classUnderTest.processData(dataA, false, SERIALIZED, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData secondResultC = classUnderTest.processData(essenceC, true, null, traceparentC);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, firstResultC, thirdResultA);
         TestUtil.assertAllNotNull(secondResultA, secondResultB, secondResultC);
@@ -267,15 +264,15 @@ public class DataProcessorTest {
         String traceparentC = TRACEPARENT_C;
         byte[] dataC = DATA_FROM_C_LONG;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData firstResultC = classUnderTest.processData(essenceC, ContentType.HIVE_ESSENCE, traceparentC);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultC = classUnderTest.processData(essenceC, ContentType.HIVE_ESSENCE, traceparentC);
-        PreparedData thirdResultC = classUnderTest.processData(dataC, ContentType.OTHER, traceparentC);
-        PreparedData thirdResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData thirdResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData firstResultC = classUnderTest.processData(essenceC, true, null, traceparentC);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData secondResultC = classUnderTest.processData(essenceC, true, null, traceparentC);
+        PreparedData thirdResultC = classUnderTest.processData(dataC, false, SERIALIZED, traceparentC);
+        PreparedData thirdResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData thirdResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, firstResultC, secondResultA, secondResultB, thirdResultC);
         TestUtil.assertAllNotNull(secondResultC, thirdResultA, thirdResultB);
@@ -296,12 +293,12 @@ public class DataProcessorTest {
         String traceparentB = TRACEPARENT_B;
         byte[] dataA = DATA_FROM_A_LONG;
 
-        PreparedData firstResultA = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData thirdResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData fourthResultA = classUnderTest.processData(dataA, ContentType.OTHER, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
+        PreparedData firstResultA = classUnderTest.processData(null, true, null, traceparentA);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData thirdResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData fourthResultA = classUnderTest.processData(dataA, false, SERIALIZED, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
 
         TestUtil.assertAllNull(firstResultA, secondResultA, firstResultB, fourthResultA);
         TestUtil.assertAllNotNull(thirdResultA, secondResultB);
@@ -320,13 +317,13 @@ public class DataProcessorTest {
         String traceparentB = TRACEPARENT_B;
         byte[] dataA = DATA_FROM_A_LONG;
 
-        PreparedData firstResultA = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData secondResultA = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData thirdResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData fourthResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData fifthResultA = classUnderTest.processData(dataA, ContentType.OTHER, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
+        PreparedData firstResultA = classUnderTest.processData(null, true, null, traceparentA);
+        PreparedData secondResultA = classUnderTest.processData(null, true, null, traceparentA);
+        PreparedData thirdResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData fourthResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData fifthResultA = classUnderTest.processData(dataA, false, SERIALIZED, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
 
         TestUtil.assertAllNull(firstResultA, secondResultA, thirdResultA, firstResultB, fifthResultA);
         TestUtil.assertAllNotNull(fourthResultA, secondResultB);
@@ -344,10 +341,10 @@ public class DataProcessorTest {
         byte[] essenceB = DATA_LONG;
         String traceparentB = TRACEPARENT_B;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultA = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(null, true, null, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, secondResultA);
         TestUtil.assertAllNotNull(secondResultB);
@@ -366,17 +363,17 @@ public class DataProcessorTest {
         byte[] dataA = DATA_FROM_A;
         byte[] secondDataA = DATA_FROM_A_LONG;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData thirdResultA = classUnderTest.processData(dataA, ContentType.OTHER, traceparentA);
-        PreparedData fourthResultA = classUnderTest.processData(secondEssenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData thirdResultB = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData fifthResultA = classUnderTest.processData(secondEssenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData sixedResultA = classUnderTest.processData(secondDataA, ContentType.OTHER, traceparentA);
-        PreparedData fourthResultB = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData sevenstResultA = classUnderTest.processData(secondDataA, ContentType.OTHER, traceparentA);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(null, true, null, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData thirdResultA = classUnderTest.processData(dataA, false, SERIALIZED, traceparentA);
+        PreparedData fourthResultA = classUnderTest.processData(secondEssenceA, true, null, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(null, true, null, traceparentB);
+        PreparedData thirdResultB = classUnderTest.processData(essenceA, true, null, traceparentB);
+        PreparedData fifthResultA = classUnderTest.processData(secondEssenceA, true, null, traceparentA);
+        PreparedData sixedResultA = classUnderTest.processData(secondDataA, false, SERIALIZED, traceparentA);
+        PreparedData fourthResultB = classUnderTest.processData(essenceA, true, null, traceparentB);
+        PreparedData sevenstResultA = classUnderTest.processData(secondDataA, false, SERIALIZED, traceparentA);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, thirdResultA, fourthResultA, thirdResultB, sixedResultA, sevenstResultA);
         TestUtil.assertAllNotNull(secondResultA, secondResultB, fifthResultA, fourthResultB);
@@ -398,13 +395,13 @@ public class DataProcessorTest {
         String traceparentB = TRACEPARENT_B;
         byte[] dataA = DATA_FROM_A;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData thirdResultA = classUnderTest.processData(dataA, ContentType.OTHER, traceparentA);
-        PreparedData thirdResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData fourthResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(null, true, null, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(null, true, null, traceparentB);
+        PreparedData thirdResultA = classUnderTest.processData(dataA, false, SERIALIZED, traceparentA);
+        PreparedData thirdResultB = classUnderTest.processData(null, true, null, traceparentB);
+        PreparedData fourthResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, secondResultB, thirdResultA, fourthResultA);
         TestUtil.assertAllNotNull(secondResultA, thirdResultB);
@@ -424,12 +421,12 @@ public class DataProcessorTest {
         byte[] difference = DIFF_LONG_UPDATE_IN_FRONT;
         byte[] dataB = DATA_FROM_B;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(essenceB, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData thirdResultB = classUnderTest.processData(dataB, ContentType.OTHER, traceparentB);
-        PreparedData fourthResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(essenceB, true, null, traceparentB);
+        PreparedData thirdResultB = classUnderTest.processData(dataB, false, SERIALIZED, traceparentB);
+        PreparedData fourthResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, secondResultA, thirdResultB);
         TestUtil.assertAllNotNull(secondResultB, fourthResultA);
@@ -441,20 +438,20 @@ public class DataProcessorTest {
     }
 
     @Test
-    public void processDataReceivingDataFromAAfterBBehindReceivingJson() throws InvalidEssenceException {
+    public void processDataReceivingDataFromAAfterBBehindRequestingAndReceivingJsonData() throws InvalidEssenceException {
         byte[] essenceA = DATA_LONG;
         String traceparentA = TRACEPARENT_A;
         String traceparentB = TRACEPARENT_B;
         byte[] dataA = DATA_FROM_A;
-        ContentType expectedType = ContentType.JSON;
+        String expectedType = JSON;
 
-        PreparedData firstResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData firstResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData secondResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
-        PreparedData secondResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData thirdResultA = classUnderTest.processData(dataA, ContentType.JSON, traceparentA);
-        PreparedData thirdResultB = classUnderTest.processData(null, ContentType.HIVE_ESSENCE, traceparentB);
-        PreparedData fourthResultA = classUnderTest.processData(essenceA, ContentType.HIVE_ESSENCE, traceparentA);
+        PreparedData firstResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData firstResultB = classUnderTest.processData(null, true, JSON, traceparentB);
+        PreparedData secondResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
+        PreparedData secondResultB = classUnderTest.processData(null, true, JSON, traceparentB);
+        PreparedData thirdResultA = classUnderTest.processData(dataA, false, JSON, traceparentA);
+        PreparedData thirdResultB = classUnderTest.processData(null, true, JSON, traceparentB);
+        PreparedData fourthResultA = classUnderTest.processData(essenceA, true, null, traceparentA);
 
         TestUtil.assertAllNull(firstResultA, firstResultB, secondResultB, thirdResultA, fourthResultA);
         TestUtil.assertAllNotNull(secondResultA, thirdResultB);
@@ -463,6 +460,6 @@ public class DataProcessorTest {
         assertTrue(Arrays.compare(essenceA, secondResultA.getData()) == 0);
         assertEquals(PreparedData.class.getSimpleName(), thirdResultB.getClass().getSimpleName());
         assertTrue(Arrays.compare(dataA, thirdResultB.getData()) == 0);
-        assertEquals(expectedType, thirdResultB.getContentType());
+        assertEquals(expectedType, thirdResultB.getRequestedType());
     }
 }

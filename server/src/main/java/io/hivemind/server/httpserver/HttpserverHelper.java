@@ -33,13 +33,31 @@ public class HttpserverHelper extends RequestHelper<HttpExchange> {
     }
 
     @Override
-    public ContentType determineContentType(final HttpExchange exchange) {
+    public boolean isHiveEssenceRequest(final HttpExchange exchange) {
         List<String> contentTypes = exchange.getRequestHeaders().get(KEY_CONTENT_TYPE);
         if (contentTypes != null && !contentTypes.isEmpty()) {
-            return ContentType.enumFor(contentTypes.get(contentTypes.size() - 1));
-        } else {
-            return null;
+            for (String contentType : contentTypes) {
+                if (ContentType.HIVE_ESSENCE == ContentType.enumFor(contentType)) {
+                    return true;
+                }
+            }
         }
+
+        return false;
+    }
+
+    @Override
+    public String determineRequestedType(final HttpExchange exchange) {
+        List<String> contentTypes = exchange.getRequestHeaders().get(KEY_CONTENT_TYPE);
+        if (contentTypes != null && !contentTypes.isEmpty()) {
+            for (String contentType : contentTypes) {
+                if (ContentType.HIVE_ESSENCE != ContentType.enumFor(contentType)) {
+                    return contentType;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -48,8 +66,8 @@ public class HttpserverHelper extends RequestHelper<HttpExchange> {
     }
 
     @Override
-    public void setContentType(final ContentType contentType, final HttpExchange response) {
-        response.getResponseHeaders().add(KEY_CONTENT_TYPE, contentType.getValue());
+    public void setContentType(final String requestedType, final HttpExchange response) {
+        response.getResponseHeaders().add(KEY_CONTENT_TYPE, requestedType);
     }
 
 }

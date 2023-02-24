@@ -42,9 +42,9 @@ public interface Data {
     public Instant getSince();
 
     /**
-     * @return the content-type or null
+     * @return the requested content type or null
      * @see ContentType
      */
-    public ContentType getContentType();
+    public String getRequestedType();
 
 }

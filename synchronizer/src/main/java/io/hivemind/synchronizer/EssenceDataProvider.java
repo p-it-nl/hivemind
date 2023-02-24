@@ -15,6 +15,8 @@
  */
 package io.hivemind.synchronizer;
 
+import io.hivemind.synchronizer.constant.ContentType;
+
 /**
  * The essence data provider is used to determine the essence of a given set of
  * data and processes received data based on essence.It is the only endpoint for
@@ -58,7 +60,7 @@ interface EssenceDataProvider {
      * Given example where when essence 42;12; is requested, the corresponding
      * data would be objects with id 4 version 2 and id 1 version 2
      * <p>
-     * FUTURE_WORK: Allow to not just return the data, but also the content-type
+     * FUTURE_WORK: Allow to not just return the data, but also the content type
      * to enable support of everything. Currently just expecting serialized
      * objects
      * </p>
@@ -81,6 +83,7 @@ interface EssenceDataProvider {
      * Save incoming data
      *
      * @param data the data received
+     * @param contentType the content type
      */
-    public void saveData(final byte[] data);
+    public void saveData(final byte[] data, final ContentType contentType);
 }

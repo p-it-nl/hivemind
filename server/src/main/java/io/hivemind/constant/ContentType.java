@@ -16,19 +16,16 @@
 package io.hivemind.constant;
 
 /**
- * Identification for content types the application differs in. Currently only
- * interested in it being hive-essence or not
- *
- * FUTURE_WORK: Implement more content-types, currently only working with
- * serialized objects
+ * Identification for content types the application differs in. The server is
+ * only interested in it being hive essence or not. The server passed data
+ * onward and does not read it.
  *
  * @author Patrick-4488
  */
 public enum ContentType {
 
     HIVE_ESSENCE("application/hive-essence"),
-    JSON("application/json"),
-    OTHER("application/ser");
+    OTHER("other");
 
     private final String value;
     private static final String SLASH = "/";
@@ -38,7 +35,7 @@ public enum ContentType {
     }
 
     /**
-     * @return Get the content-type
+     * @return Get the content type
      */
     public String getValue() {
         return value;
@@ -48,23 +45,16 @@ public enum ContentType {
      * Determine the content type based on the value. This is the preferred way
      * to create this enum.
      *
-     * FUTURE_WORK: The IF method chaining is not future proof, make something
-     * better and test is
-     *
-     * @param value the value to determine the content-type for
-     * @return the content-type (either HIVE_ESSENCE or OTHER)
+     * @param value the value to determine the content type for
+     * @return the content type (either HIVE_ESSENCE or OTHER)
      */
     public static ContentType enumFor(final String value) {
         if (value != null && !value.isEmpty()) {
             String lowerValue = value.toLowerCase();
             String hiveEssence = HIVE_ESSENCE.getValue();
-            String json = JSON.getValue();
             String secondPart = hiveEssence.split(SLASH)[1];
-            String secondPartJson = json.split(SLASH)[1];
             if (hiveEssence.equals(lowerValue) || secondPart.equals(lowerValue)) {
                 return HIVE_ESSENCE;
-            } else if (json.equals(lowerValue) || secondPartJson.equals(lowerValue)) {
-                return JSON;
             }
         }
 

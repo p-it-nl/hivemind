@@ -22,12 +22,23 @@ package io.hivemind.data;
  * @author Patrick-4488
  */
 public class DataRequest extends PreparedData {
-    
+
     /**
      * New data request for an essence
+     *
      * @param essence the essence to create for
      */
     public DataRequest(final byte[] essence) {
         super(essence);
+    }
+
+    /**
+     * New data request for an essence
+     *
+     * @param essence the essence to create for
+     * @param requestedType the (specific) requested content type
+     */
+    public DataRequest(final byte[] essence, final String requestedType) {
+        super(essence, requestedType);
     }
 }

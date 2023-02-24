@@ -74,9 +74,10 @@ public class HiveHandler implements HttpHandler {
         }
     }
 
+    // FUTURE_WORK: Move this to a service and split it up in smaller bits that are reusable between httpServer and Netty
     private void processData(final byte[] bytes, final HttpExchange exchange, final RequestHelper<HttpExchange> helper, final String traceparent) throws IOException {
         try {
-            PreparedData preparedData = dataProcessor.processData(bytes, helper.determineContentType(exchange), traceparent);
+            PreparedData preparedData = dataProcessor.processData(bytes, helper.isHiveEssenceRequest(exchange), helper.determineRequestedType(exchange), traceparent);
             if (preparedData != null) {
                 LOGGER.log(INFO, "Request succeeded with having data with type: {0}",
                         preparedData.getClass().getSimpleName());
@@ -84,13 +85,13 @@ public class HiveHandler implements HttpHandler {
                 byte[] responseData = preparedData.getData();
                 // FUTURE_WORK: Java 19 - switch to pattern matching
                 if (preparedData instanceof DataRequest) {
-                    helper.setContentType(ContentType.HIVE_ESSENCE, exchange);
+                    helper.setContentType(helper.determineDataRequestContentType(preparedData), exchange);
                     exchange.sendResponseHeaders(200, responseData.length);
                 } else if (preparedData instanceof PriorityRequest) {
-                    helper.setContentType(ContentType.HIVE_ESSENCE, exchange);
+                    helper.setContentType(ContentType.HIVE_ESSENCE.getValue(), exchange);
                     exchange.sendResponseHeaders(409, responseData.length);
                 } else {
-                    helper.setContentType(preparedData.getContentType(), exchange);
+                    helper.setContentType(preparedData.getRequestedType(), exchange);
                     exchange.sendResponseHeaders(200, responseData.length);
                 }
 

@@ -39,6 +39,7 @@ public class SynchronizeTask implements Runnable {
 
     private String traceparent;
     private PreparedData dataToSend;
+    private ContentType contentTypeOfDataToSend;
     private boolean isDataRequest;
 
     private final HttpClient client;
@@ -47,6 +48,7 @@ public class SynchronizeTask implements Runnable {
 
     private static final String KEY_TRACEPARENT = "traceparent";
     private static final String KEY_CONTENT_TYPE = "content-type";
+    private static final String CONTENT_TYPE_SEPARATOR = ", ";
 
     private static final System.Logger LOGGER = System.getLogger(SynchronizeTask.class.getName());
 
@@ -80,11 +82,12 @@ public class SynchronizeTask implements Runnable {
         }
     }
 
-    private HttpRequest buildEssenceRequest(final byte[] bytes) {
+    private HttpRequest buildDataRequest() {
         HttpRequest.Builder buidler = HttpRequest.newBuilder();
         buidler.uri(URI.create(config.getUri()))
-                .POST(HttpRequest.BodyPublishers.ofByteArray(bytes))
-                .header(KEY_CONTENT_TYPE, ContentType.HIVE_ESSENCE.getValue());
+                .POST(HttpRequest.BodyPublishers.ofByteArray(dataToSend.getData()))
+                .header(KEY_CONTENT_TYPE, (contentTypeOfDataToSend != null
+                        ? contentTypeOfDataToSend.getValue() : ContentType.SERIALIZED.getValue()));
         if (traceparent != null && !traceparent.isEmpty()) {
             buidler.header(KEY_TRACEPARENT, traceparent);
         }
@@ -92,16 +95,29 @@ public class SynchronizeTask implements Runnable {
         return buidler.build();
     }
 
-    private HttpRequest buildDataRequest() {
+    private HttpRequest buildEssenceRequest(final byte[] bytes) {
         HttpRequest.Builder buidler = HttpRequest.newBuilder();
         buidler.uri(URI.create(config.getUri()))
-                .POST(HttpRequest.BodyPublishers.ofByteArray(dataToSend.getData()))
-                .header(KEY_CONTENT_TYPE, ContentType.OTHER.getValue());
+                .POST(HttpRequest.BodyPublishers.ofByteArray(bytes))
+                .header(KEY_CONTENT_TYPE, determineEssenceRequestContentType());
         if (traceparent != null && !traceparent.isEmpty()) {
             buidler.header(KEY_TRACEPARENT, traceparent);
         }
 
         return buidler.build();
+    }
+
+    private String determineEssenceRequestContentType() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ContentType.HIVE_ESSENCE.getValue());
+
+        ContentType configured = config.getContentType();
+        if (configured != null && ContentType.SERIALIZED != configured) {
+            sb.append(CONTENT_TYPE_SEPARATOR);
+            sb.append(configured.getValue());
+        }
+
+        return sb.toString();
     }
 
     // FUTURE_WORK: Now reading all bytes to the heap, better in some cases to buffer
@@ -149,10 +165,10 @@ public class SynchronizeTask implements Runnable {
                     if (respondingEssence != null && respondingEssence.length > 0) {
                         dataToSend = new PreparedData(essenceDataProvider.getDataForEssence(respondingEssence));
                     }
-                } else if (ContentType.OTHER == contentType) {
+                } else {
                     LOGGER.log(INFO, "Synchronization task succeeded, application received data");
 
-                    essenceDataProvider.saveData(response.body());
+                    essenceDataProvider.saveData(response.body(), contentType);
                 }
             }
             case 409 -> {
@@ -171,11 +187,14 @@ public class SynchronizeTask implements Runnable {
 
     private ContentType getContentType(final HttpResponse<byte[]> response) {
         List<String> contentTypeValues = response.headers().allValues(KEY_CONTENT_TYPE);
+        for (String c : contentTypeValues) {
+            System.out.println(c);
+        }
         if (!contentTypeValues.isEmpty()) {
             return ContentType.enumFor(contentTypeValues.get(contentTypeValues.size() - 1));
         } else {
             LOGGER.log(WARNING, """
-                Response from Hivemind received that did not have a content-type 
+                Response from Hivemind received that did not have a content type 
                 set, this is an issue worth looking into""");
         }
 

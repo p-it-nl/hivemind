@@ -29,6 +29,11 @@ public enum HiveCeption {
         of the hive resources was given which is not a number. This is not (currently) 
         supported since the value will become part of a number sequence that 
         represents the hive essence. Please use a number"""
+    ),
+    CANNOT_BE_HIVE_ESSENCE("""
+       It is not possible to request data in a hive essence format. Data is is not a
+       essence to be send but is the actual data. This can be JSON or Serialized or 
+      other formats."""
     );
 
     private final String message;

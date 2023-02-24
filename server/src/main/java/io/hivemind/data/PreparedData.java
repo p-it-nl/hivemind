@@ -15,8 +15,6 @@
  */
 package io.hivemind.data;
 
-import io.hivemind.constant.ContentType;
-
 /**
  * Data that has been prepared to be returned to or send by a synchronizer
  *
@@ -24,11 +22,22 @@ import io.hivemind.constant.ContentType;
  */
 public class PreparedData extends ObservedData {
 
-    public PreparedData(final byte[] essence) {
-        super(essence);
+    /**
+     * Prepared data request for an essence
+     *
+     * @param data the data to create for
+     */
+    public PreparedData(final byte[] data) {
+        super(data);
     }
 
-    public PreparedData(final byte[] essence, final ContentType contentType) {
-        super(essence, contentType);
+    /**
+     * Prepared data request for an essence
+     *
+     * @param data the data to create for
+     * @param requestedType the type of data (as requested)
+     */
+    public PreparedData(final byte[] data, final String requestedType) {
+        super(data, requestedType);
     }
 }

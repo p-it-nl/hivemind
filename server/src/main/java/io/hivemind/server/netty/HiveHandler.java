@@ -126,7 +126,8 @@ public class HiveHandler extends SimpleChannelInboundHandler<Object> {
             byte[] responseData = new byte[0];
             FullHttpResponse response;
             try {
-                PreparedData preparedData = dataProcessor.processData(readData(), helper.determineContentType(request), traceparent);
+                // FUTURE_WORK: Move this to a service and split it up in smaller bits that are reusable between httpServer and Netty
+                PreparedData preparedData = dataProcessor.processData(readData(), helper.isHiveEssenceRequest(request), helper.determineRequestedType(request), traceparent);
 
                 if (preparedData != null) {
                     response = helper.createBaseResponse(preparedData.getData(), request);
@@ -136,12 +137,12 @@ public class HiveHandler extends SimpleChannelInboundHandler<Object> {
 
                     helper.setTraceparent(traceparent, response);
                     if (preparedData instanceof DataRequest) {
-                        helper.setContentType(ContentType.HIVE_ESSENCE, response);
+                        helper.setContentType(helper.determineDataRequestContentType(preparedData), response);
                     } else if (preparedData instanceof PriorityRequest) {
-                        helper.setContentType(ContentType.HIVE_ESSENCE, response);
+                        helper.setContentType(ContentType.HIVE_ESSENCE.getValue(), response);
                         response.setStatus(CONFLICT);
                     } else {
-                        helper.setContentType(ContentType.OTHER, response);
+                        helper.setContentType(preparedData.getRequestedType(), response);
                     }
                 } else {
                     LOGGER.log(INFO, "Request succeeded, no data required, returning 204");
