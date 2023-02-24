@@ -42,12 +42,20 @@ public class NettyHelper extends RequestHelper<HttpMessage> {
         return super.determineTraceparent(request.headers().getAll(KEY_TRACEPARENT));
     }
 
+    // FUTURE_WORK: Add unit tests and combine, its to similair to below
     @Override
     public boolean isHiveEssenceRequest(final HttpMessage request) {
         List<String> contentTypes = request.headers().getAll(KEY_CONTENT_TYPE);
         if (contentTypes != null && !contentTypes.isEmpty()) {
             for (String contentType : contentTypes) {
-                if (ContentType.HIVE_ESSENCE == ContentType.enumFor(contentType)) {
+                if (contentType.contains(COMMA)) {
+                    String[] contentTypesWithin = contentType.split(COMMA);
+                    for (String contentTypeWithin : contentTypesWithin) {
+                        if (ContentType.HIVE_ESSENCE == ContentType.enumFor(contentTypeWithin)) {
+                            return true;
+                        }
+                    }
+                } else if (ContentType.HIVE_ESSENCE == ContentType.enumFor(contentType)) {
                     return true;
                 }
             }
@@ -56,7 +64,7 @@ public class NettyHelper extends RequestHelper<HttpMessage> {
         return false;
     }
 
-    // FUTURE_WORK: Add unit tests
+    // FUTURE_WORK: Add unit tests and combine, its to similair to above
     @Override
     public String determineRequestedType(final HttpMessage request) {
         List<String> contentTypes = request.headers().getAll(KEY_CONTENT_TYPE);
