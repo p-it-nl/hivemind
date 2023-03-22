@@ -16,17 +16,17 @@
 package io.hivemind.synchronizer.exception;
 
 /**
- * Generic custom exception
+ * Exception when conversion goes wrong
  *
  * @author Patrick-4488
  */
-public abstract class HiveException extends Exception {
+public class ConversionException extends HiveException {
 
-    protected HiveException(final HiveCeption exception) {
-        super(exception.getMessage());
+    public ConversionException(final HiveCeption exception) {
+        super(exception);
     }
 
-    protected HiveException(final HiveCeption exception, final Object... args) {
-        super(exception.getMessage().formatted(args));
+    public ConversionException(final HiveCeption exception, final Object... args) {
+        super(exception, args);
     }
 }

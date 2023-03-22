@@ -16,15 +16,20 @@
 package io.hivemind.synchronizer.constant;
 
 /**
- * Identification for content types the application differs in. Currently only
- * interested in it being hive-essence or not
+ * Identification for content types the application differs in. The supported
+ * content type is per synchronizer, currently supporting:
+ * <ul>
+ * <li>- Hive essence</li>
+ * <li>- JSON</li>
+ * </ul>
+ * Android currently only supports JSON for data
  *
  * @author Patrick-4488
  */
 public enum ContentType {
 
     HIVE_ESSENCE("application/hive-essence"),
-    OTHER("application/ser");
+    JSON("application/json");
 
     private final String value;
     private static final String SLASH = "/";
@@ -34,7 +39,7 @@ public enum ContentType {
     }
 
     /**
-     * @return Get the content-type
+     * @return Get the content type value
      */
     public String getValue() {
         return value;
@@ -44,8 +49,8 @@ public enum ContentType {
      * Determine the content type based on the value. This is the preferred way
      * to create this enum.
      *
-     * @param value the value to determine the content-type for
-     * @return the content-type (either HIVE_ESSENCE or OTHER)
+     * @param value the value to determine the content type for
+     * @return the content type (either HIVE_ESSENCE or OTHER)
      */
     public static ContentType enumFor(final String value) {
         if (value != null && !value.isEmpty()) {
@@ -57,6 +62,6 @@ public enum ContentType {
             }
         }
 
-        return OTHER;
+        return JSON;
     }
 }

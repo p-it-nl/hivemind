@@ -13,20 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.hivemind.synchronizer.exception;
+package io.hivemind.synchronizer.data.conversion;
+
+import io.hivemind.synchronizer.HiveResource;
+import java.util.List;
 
 /**
- * Generic custom exception
+ * Converts byte arrays to specified content type
  *
  * @author Patrick-4488
  */
-public abstract class HiveException extends Exception {
+public interface Converter {
 
-    protected HiveException(final HiveCeption exception) {
-        super(exception.getMessage());
-    }
+    /**
+     * Convert objects of T to byte array
+     *
+     * @param objects the objects to convert
+     * @return the byte array
+     */
+    byte[] toBytes(final Object... objects) throws Exception;
 
-    protected HiveException(final HiveCeption exception, final Object... args) {
-        super(exception.getMessage().formatted(args));
-    }
+    /**
+     * Convert objects of T to byte array
+     *
+     * @param data the byte array
+     * @return the byte array
+     */
+    List<HiveResource> fromBytes(final byte[] data);
 }

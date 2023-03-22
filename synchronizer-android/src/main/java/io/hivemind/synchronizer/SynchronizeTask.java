@@ -22,9 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import static java.lang.System.Logger.Level.ERROR;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +36,7 @@ public class SynchronizeTask implements Runnable {
 
     private String traceparent;
     private PreparedData dataToSend;
+    private ContentType contentTypeOfDataToSend;
     private boolean isDataRequest;
 
     private final EssenceDataProvider essenceDataProvider;
@@ -46,6 +45,7 @@ public class SynchronizeTask implements Runnable {
     private static final String KEY_TRACEPARENT = "traceparent";
     private static final String KEY_CONTENT_TYPE = "content-type";
     private static final String POST = "POST";
+    private static final String CONTENT_TYPE_SEPARATOR = ", ";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveEssenceDataProvider.class);
 
@@ -86,14 +86,15 @@ public class SynchronizeTask implements Runnable {
 
     private HttpURLConnection buildEssenceRequest() throws IOException {
         HttpURLConnection urlConnection = getBaseRequest();
-        urlConnection.addRequestProperty(KEY_CONTENT_TYPE, ContentType.HIVE_ESSENCE.getValue());
+        urlConnection.addRequestProperty(KEY_CONTENT_TYPE, determineEssenceRequestContentType());
 
         return urlConnection;
     }
 
     private HttpURLConnection buildDataRequest() throws IOException {
         HttpURLConnection urlConnection = getBaseRequest();
-        urlConnection.addRequestProperty(KEY_CONTENT_TYPE, ContentType.OTHER.getValue());
+        urlConnection.addRequestProperty(KEY_CONTENT_TYPE, (contentTypeOfDataToSend != null
+                ? contentTypeOfDataToSend.getValue() : ContentType.JSON.getValue()));
 
         return urlConnection;
     }
@@ -108,6 +109,15 @@ public class SynchronizeTask implements Runnable {
         }
 
         return urlConnection;
+    }
+
+    private String determineEssenceRequestContentType() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ContentType.HIVE_ESSENCE.getValue());
+        sb.append(CONTENT_TYPE_SEPARATOR);
+        sb.append(config.getContentType().getValue());
+
+        return sb.toString();
     }
 
     // FUTURE_WORK: Now reading all bytes to the heap, better in some cases to buffer
@@ -137,19 +147,6 @@ public class SynchronizeTask implements Runnable {
         }
     }
 
-    private ContentType getContentType(final HttpURLConnection response) {
-        String respondingContentType = response.getHeaderField(KEY_CONTENT_TYPE);
-        if (respondingContentType != null && !respondingContentType.isEmpty()) {
-            return ContentType.enumFor(respondingContentType);
-        } else {
-            LOGGER.warn("""
-                Response from Hivemind received that did not have a content-type 
-                set, this is an issue worth looking into""");
-        }
-
-        return null;
-    }
-
     private boolean isSuccessful(final HttpURLConnection response) throws IOException {
         int code = response.getResponseCode();
         return code == 200 || code == 204 || code == 409;
@@ -168,10 +165,10 @@ public class SynchronizeTask implements Runnable {
                     if (respondingEssence != null && respondingEssence.length > 0) {
                         dataToSend = new PreparedData(essenceDataProvider.getDataForEssence(respondingEssence));
                     }
-                } else if (ContentType.OTHER == contentType) {
+                } else {
                     LOGGER.info("Synchronization task succeeded, application received data");
 
-                    essenceDataProvider.saveData(readData(response));
+                    essenceDataProvider.saveData(readData(response), contentType);
                 }
             }
             case 409 -> {
@@ -199,5 +196,18 @@ public class SynchronizeTask implements Runnable {
         }
 
         return data;
+    }
+
+    private ContentType getContentType(final HttpURLConnection response) {
+        String respondingContentType = response.getHeaderField(KEY_CONTENT_TYPE);
+        if (respondingContentType != null && !respondingContentType.isEmpty()) {
+            return ContentType.enumFor(respondingContentType.split(CONTENT_TYPE_SEPARATOR)[0]);
+        } else {
+            LOGGER.warn("""
+                Response from Hivemind received that did not have a content type 
+                set, this is an issue worth looking into""");
+        }
+
+        return null;
     }
 }

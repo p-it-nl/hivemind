@@ -15,6 +15,8 @@
  */
 package io.hivemind.synchronizer;
 
+import java.lang.reflect.Field;
+
 /**
  * Hive resources is: the singular object (can be part of a collection) to
  * synchronize with the hive.
@@ -84,7 +86,7 @@ public interface HiveResource {
      *
      * @return the id
      */
-    public abstract Object getId();
+    public Object getId();
 
     /**
      * Retrieve the version for the resource which is expected to be a number.
@@ -92,5 +94,6 @@ public interface HiveResource {
      *
      * @return the version
      */
-    public abstract Object getVersion();
+    public Object getVersion();
+
 }

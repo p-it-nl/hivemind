@@ -37,7 +37,7 @@ public class ContentTypeTest {
     @Test
     public void contentTypeFromNull() {
         String value = null;
-        ContentType expected = ContentType.OTHER;
+        ContentType expected = ContentType.JSON;
 
         ContentType result = ContentType.enumFor(value);
 
@@ -47,7 +47,7 @@ public class ContentTypeTest {
     @Test
     public void contentTypeFromEmpty() {
         String value = VALUE_EMPTY;
-        ContentType expected = ContentType.OTHER;
+        ContentType expected = ContentType.JSON;
 
         ContentType result = ContentType.enumFor(value);
 
@@ -57,7 +57,7 @@ public class ContentTypeTest {
     @Test
     public void contentTypeFromApplicationZip() {
         String value = VALUE_APPLICATION_ZIP;
-        ContentType expected = ContentType.OTHER;
+        ContentType expected = ContentType.JSON;
 
         ContentType result = ContentType.enumFor(value);
 
@@ -67,7 +67,7 @@ public class ContentTypeTest {
     @Test
     public void contentTypeFromApplicationJson() {
         String value = VALUE_APPLICATION_JSON;
-        ContentType expected = ContentType.OTHER;
+        ContentType expected = ContentType.JSON;
 
         ContentType result = ContentType.enumFor(value);
 
@@ -77,7 +77,7 @@ public class ContentTypeTest {
     @Test
     public void contentTypeFromMock() {
         String value = VALUE_MOCK;
-        ContentType expected = ContentType.OTHER;
+        ContentType expected = ContentType.JSON;
 
         ContentType result = ContentType.enumFor(value);
 
@@ -107,7 +107,7 @@ public class ContentTypeTest {
     @Test
     public void contentTypeFromHiveEssenceWithoutHyphen() {
         String value = VALUE_HIVE_ESSENCE_NO_HYPHEN;
-        ContentType expected = ContentType.OTHER;
+        ContentType expected = ContentType.JSON;
 
         ContentType result = ContentType.enumFor(value);
 

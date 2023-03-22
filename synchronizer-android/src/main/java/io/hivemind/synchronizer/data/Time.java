@@ -13,20 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.hivemind.synchronizer.exception;
+package io.hivemind.synchronizer.data;
+
+import java.time.Instant;
 
 /**
- * Generic custom exception
  *
  * @author Patrick-4488
  */
-public abstract class HiveException extends Exception {
+public class Time {
+    
+    private Instant instant;
 
-    protected HiveException(final HiveCeption exception) {
-        super(exception.getMessage());
+    public Instant getInstant() {
+        return instant;
     }
 
-    protected HiveException(final HiveCeption exception, final Object... args) {
-        super(exception.getMessage().formatted(args));
+    public void setInstant(Instant instant) {
+        this.instant = instant;
     }
+    
+    
+
 }
