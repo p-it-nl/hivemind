@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,16 +83,11 @@ public class JsonConverter extends ResourceConverter {
         if (objects[0] != null) {
             try ( ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                 int last = objects.length - 1;
-                System.out.println("objects: " + objects.length);
                 for (int i = 0; i < objects.length; i++) {
                     Object obj = objects[i];
                     Class<?> clazz = obj.getClass();
                     if (!isPartOfJavaLang(clazz)) {
-                        System.out.println(clazz.getPackage());
-
                         Map<String, Map.Entry<Field, Integer>> mappedFields = mapFields(clazz);
-                        System.out.println(mappedFields);
-                        System.out.println(mappedFields.size());
                         if (!mappedFields.isEmpty()) {
                             String[] fieldResults = new String[mappedFields.size()];
 
@@ -103,7 +99,9 @@ public class JsonConverter extends ResourceConverter {
                             LOGGER.debug("Object contains no fields, nothing to convert");
                         }
                     } else {
-                        LOGGER.debug("Object is part of java.lang and probably primitive or otherwise not eligible for conversion");
+                        LOGGER.debug("Object is part of java.lang and probably primitive "
+                                + "or otherwise not eligible for conversion as object, will convert as value");
+                        baos.write(obj.toString().getBytes());
                     }
                 }
 
@@ -125,14 +123,18 @@ public class JsonConverter extends ResourceConverter {
     private Map<String, Map.Entry<Field, Integer>> mapFields(final Class<?> clazz) {
         Map<String, Map.Entry<Field, Integer>> result = new HashMap<>();
 
-        Field[] fields = clazz.getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field field = fields[i];
-            String name = field.getName();
-            if (!name.startsWith(DEFAULT_FIELD)) {
-                result.put(name, new SimpleEntry<>(field, i));
-            } else {
-                LOGGER.debug("Field is default Java field e.g. this$0");
+        Field[][] allFields = {clazz.getDeclaredFields(), clazz.getSuperclass().getDeclaredFields()};
+        int fieldNo = 0;
+        for (int i = 0; i < allFields.length; i++) {
+            Field[] fields = allFields[i];
+            for (Field field : fields) {
+                String name = field.getName();
+                if (!name.startsWith(DEFAULT_FIELD)) {
+                    result.put(name, new SimpleEntry<>(field, fieldNo));
+                    fieldNo++;
+                } else {
+                    LOGGER.debug("Field is default Java field e.g. this$0");
+                }
             }
         }
 
@@ -277,5 +279,4 @@ public class JsonConverter extends ResourceConverter {
     private boolean isPartOfJavaLang(final Class<?> clazz) {
         return PACKAGE_JAVA_LANG.equals(clazz.getPackageName());
     }
-
 }

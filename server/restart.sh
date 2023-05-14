@@ -2,7 +2,7 @@
 
 echo "Stopping current running hivemind (if applicable)"
 
-entry=$(ps -fea|grep -i java | grep hivemind-0.1.jar)
+entry=$(ps -fea|grep -i java | grep hivemind-1.0.jar)
 pid=$(echo $entry | cut -c6-10)
 
 if [ -z "$pid" ]
@@ -16,7 +16,7 @@ fi
 
 echo "Starting hivemind"
 
-java -jar /home/hivemind/hivemind/hivemind-0.1.jar &
+java -jar /home/hivemind/hivemind/hivemind-1.0.jar &
 
 echo "Hivemind is now up and running"
 
