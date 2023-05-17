@@ -80,7 +80,7 @@ public class SynchronizeTask implements Runnable {
 
             LOGGER.info("Synchronization finished");
         } catch (IOException ex) {
-            LOGGER.info("Synchronization task failed", ex);
+            LOGGER.error("Synchronization task failed", ex);
         }
     }
 
