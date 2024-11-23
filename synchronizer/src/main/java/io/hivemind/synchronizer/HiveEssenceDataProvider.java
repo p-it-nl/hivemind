@@ -55,7 +55,7 @@ public class HiveEssenceDataProvider implements EssenceDataProvider {
         try {
             resources = translator.interpolateResourcesFromEssence(essence);
         } catch (InvalidEssenceException ex) {
-            LOGGER.log(ERROR, "Failed to process invalid essence, being: {0}",
+            LOGGER.log(ERROR, "Failed to process invalid essence, being: {0}, exception: {1}",
                     (essence != null ? new String(essence) : "null"), ex);
         }
         resources = resourceProvider.provideResources(resources);
@@ -65,7 +65,7 @@ public class HiveEssenceDataProvider implements EssenceDataProvider {
             oos.writeObject(resources);//NOSONAR, in this case List is always ArrayList and there for serializable
             data = baos.toByteArray();
         } catch (IOException ex) {
-            LOGGER.log(ERROR, "Failed to convert object to byte array", ex);
+            LOGGER.log(ERROR, "Failed to convert object to byte array, exception: {0}", ex);
         }
 
         return data;
@@ -84,7 +84,7 @@ public class HiveEssenceDataProvider implements EssenceDataProvider {
             resourceProvider.deleteAllResourcesExcept(
                     translator.interpolateResourcesFromEssence(essence));
         } catch (InvalidEssenceException ex) {
-            LOGGER.log(ERROR, "Failed to process invalid essence, being: {0}",
+            LOGGER.log(ERROR, "Failed to process invalid essence, being: {0}, exception: {1}",
                     (essence != null ? new String(essence) : "null"), ex);
         }
     }

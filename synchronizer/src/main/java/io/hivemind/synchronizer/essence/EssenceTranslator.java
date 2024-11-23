@@ -71,7 +71,7 @@ public class EssenceTranslator {
                     }
                 }
             } catch (IOException ex) {
-                LOGGER.log(ERROR, "Failed to determine essence part from essence", ex);
+                LOGGER.log(ERROR, "Failed to determine essence part from essence, exception: {0}", ex);
             }
         } else {
             LOGGER.log(DEBUG, "Attempted to interpolate resources, but no essence was provided");
@@ -99,7 +99,7 @@ public class EssenceTranslator {
 
                 essence = baos.toByteArray();
             } catch (IOException | NotSupportedException ex) {
-                LOGGER.log(ERROR, "Failed to determine essence from object", ex);
+                LOGGER.log(ERROR, "Failed to determine essence from object, exception: {0}", ex);
             }
         } else {
             LOGGER.log(WARNING, """

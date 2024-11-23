@@ -78,7 +78,7 @@ public class SynchronizeTask implements Runnable {
             LOGGER.log(INFO, "Synchronization finished");
         } catch (IOException | InterruptedException ex) {
             Thread.currentThread().interrupt();
-            LOGGER.log(ERROR, "Synchronization task failed", ex);
+            LOGGER.log(ERROR, "Synchronization task failed, exception: {0}", ex);
         }
     }
 
