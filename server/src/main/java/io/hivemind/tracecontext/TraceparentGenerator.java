@@ -16,6 +16,7 @@
 package io.hivemind.tracecontext;
 
 import java.security.SecureRandom;
+import java.util.HexFormat;
 
 /**
  * Generator for generating traceparent based on W3C recommendation for trace
@@ -29,7 +30,6 @@ public class TraceparentGenerator {
     private static final String VERSION = "00";
     private static final String UNSAMPLED = "00";
     private static final String TRACE_BETWEEN = "-";
-    private static final char[] HEX_OPTIONS = "0123456789abcdef".toCharArray();
 
     private TraceparentGenerator() {
     }
@@ -56,13 +56,6 @@ public class TraceparentGenerator {
 
     private static String bytesToHex(byte[] bytes) {
         new SecureRandom().nextBytes(bytes);
-        char[] hexChars = new char[bytes.length * 2];
-        for (int i = 0; i < bytes.length; i++) {
-            int v = bytes[i] & 0xFF;
-            hexChars[i * 2] = HEX_OPTIONS[v >>> 4];
-            hexChars[i * 2 + 1] = HEX_OPTIONS[v & 0x0F];
-        }
-
-        return new String(hexChars);
+        return HexFormat.of().formatHex(bytes);
     }
 }
